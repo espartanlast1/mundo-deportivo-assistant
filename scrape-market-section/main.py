@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 import csv
 import json
+import os
 
 
 with open('config.json') as config_file:
@@ -110,19 +111,25 @@ market_time = current_datetime.strftime('%Y-%m-%d %H:%M')
 market_time = market_time.replace(" ", "-")
 
 # Create first row of the CSV file.
-market_structure_header = ['Informacion de mercado', 'Puntuacion', 'Nombre', 'Valor mercado', 'Promedio valor', 'Ultimo partido puntuacion', 'Penultimo partido puntuacion', 'Antepenultimo partido puntuacion', 'Valor mercado again']
+market_structure_header = ['Informacion de mercado', 'Puntuacion', 'Nombre', 'Valor mercado', 'Promedio valor', 'Ultimo partido puntuacion', 'Penultimo partido puntuacion', 'Antepenultimo partido puntuacion', 'Valor mercado again','Time Stamp']
 
 # Get the name of the CSV file together.
-file_name = 'market-data-{}.csv'.format(market_time)
+file_name = 'market-data.csv'
+
+# Check if the file exists
+file_exists = os.path.exists(file_name)
 
 # Create a CSV with all the previous information mentioned.
-with open(file_name, 'w', newline='') as archivo_csv:
+with open(file_name, 'a' if file_exists else 'w', newline='') as archivo_csv:
     writer = csv.writer(archivo_csv)
 
     # Write the header
-    writer.writerow(market_structure_header)
+    if not file_exists:
+        writer.writerow(market_structure_header)
 
-    # Write the player data
-    writer.writerows(players)
+    for player in players:
+        # Add the current timestamp to each player's data
+        player_data = player + [datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
+        writer.writerow(player_data)
 
 driver.quit()

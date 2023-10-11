@@ -111,7 +111,7 @@ market_time = current_datetime.strftime('%Y-%m-%d %H:%M')
 market_time = market_time.replace(" ", "-")
 
 # Create first row of the CSV file.
-market_structure_header = ['Informacion de mercado', 'Puntuacion', 'Nombre', 'Valor mercado', 'Promedio valor', 'Ultimo partido puntuacion', 'Penultimo partido puntuacion', 'Antepenultimo partido puntuacion', 'Valor mercado again','Time Stamp']
+market_structure_header = ['Puntuacion', 'Nombre', 'Valor mercado', 'Promedio valor', 'Antepenultimo partido puntuacion', 'Penultimo partido puntuacion', 'Ultimo partido puntuacion', 'Venta','Time Stamp']
 
 # Get the name of the CSV file together.
 file_name = 'market-data.csv'

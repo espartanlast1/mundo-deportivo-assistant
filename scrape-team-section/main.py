@@ -15,9 +15,8 @@ with open('config.json') as config_file:
 email = config['email']
 password = config['password']
 
-driver = webdriver.Edge()
-chrome_options = webdriver.EdgeOptions()
-chrome_options.add_argument("--headless")
+driver = webdriver.Chrome()
+chrome_options = webdriver.Chrome()
 
 mundo_deportivo_liga_fantasy = "https://mister.mundodeportivo.com/new-onboarding/auth/email"
 
@@ -126,7 +125,7 @@ market_time = current_datetime.strftime('%Y-%m-%d %H:%M')
 market_time = market_time.replace(" ", "-")
 
 # Create first row of the CSV file.
-market_structure_header = ['Puntuacion', 'Nombre', 'Valor mercado', 'Promedio valor', 'Ultimo partido puntuacion', 'Penultimo partido puntuacion', 'Antepenultimo partido puntuacion', 'Venta','Time Stamp']
+market_structure_header = ['Puntuacion', 'Nombre', 'Valor mercado', 'Promedio valor', 'Antepenultimo partido puntuacion', 'Penultimo partido puntuacion', 'Ultimo partido puntuacion', 'Venta','Time Stamp']
 
 # Get the name of the CSV file together.
 file_name = 'market-data.csv'

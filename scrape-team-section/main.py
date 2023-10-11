@@ -96,8 +96,6 @@ market_players_table = driver.find_element(By.XPATH, '//*[@id="content"]/div[2]/
 
 # Separate every item in a new array everytime there's a break line.
 players_market_information_array = market_players_table.text.split('\n')
-print(market_players_table.text)
-print(players_market_information_array)
 
 """
 As all the information is in a single array, we need to classify correctly depending on each player. 
@@ -118,9 +116,6 @@ while 'Vender' in players_market_information_array[start_index:]:
     players.append(player_information)
     start_index = end_index
 
-for player in players:
-    print(player)
-
 # Start process to save all the information in a CSV.
 
 # Create the name of the csv
@@ -131,7 +126,7 @@ market_time = current_datetime.strftime('%Y-%m-%d %H:%M')
 market_time = market_time.replace(" ", "-")
 
 # Create first row of the CSV file.
-market_structure_header = ['Informacion de mercado', 'Puntuacion', 'Nombre', 'Valor mercado', 'Promedio valor', 'Ultimo partido puntuacion', 'Penultimo partido puntuacion', 'Antepenultimo partido puntuacion', 'Valor mercado again','Time Stamp']
+market_structure_header = ['Puntuacion', 'Nombre', 'Valor mercado', 'Promedio valor', 'Ultimo partido puntuacion', 'Penultimo partido puntuacion', 'Antepenultimo partido puntuacion', 'Venta','Time Stamp']
 
 # Get the name of the CSV file together.
 file_name = 'market-data.csv'
@@ -143,6 +138,7 @@ file_exists = os.path.exists(file_name)
 with open(file_name, 'a' if file_exists else 'w', newline='') as archivo_csv:
     writer = csv.writer(archivo_csv)
 
+    print(market_structure_header)
     # Write the header
     if not file_exists:
         writer.writerow(market_structure_header)
@@ -150,6 +146,7 @@ with open(file_name, 'a' if file_exists else 'w', newline='') as archivo_csv:
     for player in players:
         # Add the current timestamp to each player's data
         player_data = player + [datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
+        print(player_data)
         writer.writerow(player_data)
 
 driver.quit()

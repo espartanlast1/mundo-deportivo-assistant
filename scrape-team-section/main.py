@@ -125,10 +125,10 @@ market_time = current_datetime.strftime('%Y-%m-%d %H:%M')
 market_time = market_time.replace(" ", "-")
 
 # Create first row of the CSV file.
-market_structure_header = ['Puntuacion', 'Nombre', 'Valor mercado', 'Promedio valor', 'Antepenultimo partido puntuacion', 'Penultimo partido puntuacion', 'Ultimo partido puntuacion', 'Venta','Time Stamp']
+market_structure_header = ['Puntuacion', 'Nombre', 'Valor mercado', 'Promedio valor', 'Antepenultimo partido puntuacion', 'Penultimo partido puntuacion', 'Ultimo partido puntuacion','Time Stamp']
 
 # Get the name of the CSV file together.
-file_name = 'market-data.csv'
+file_name = 'team-data.csv'
 
 # Check if the file exists
 file_exists = os.path.exists(file_name)
@@ -144,6 +144,7 @@ with open(file_name, 'a' if file_exists else 'w', newline='') as archivo_csv:
 
     for player in players:
         # Add the current timestamp to each player's data
+        player.pop()
         player_data = player + [datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
         print(player_data)
         writer.writerow(player_data)

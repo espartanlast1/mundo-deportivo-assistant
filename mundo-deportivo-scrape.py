@@ -435,6 +435,6 @@ if __name__ == '__main__':
     api_football = config['api-football']
 
     scrape_market_section_fantasy(email_fantasy, password_fantasy)
-    #scrape_personal_team_fantasy(email_fantasy, password_fantasy)
-    #scrape_la_liga_standings(api_football)
+    scrape_personal_team_fantasy(email_fantasy, password_fantasy)
+    scrape_la_liga_standings(api_football)
 

@@ -107,7 +107,7 @@ def scrape_market_section_fantasy ( email , password ):
                                'Ultimo partido puntuacion', 'Venta', 'Time Stamp']
 
     # Get the name of the CSV file together.
-    file_name = 'market-data.csv'
+    file_name = 'data/market-data.csv'
 
     # Check if the file exists
     file_exists = os.path.exists(file_name)
@@ -239,7 +239,7 @@ def scrape_personal_team_fantasy ( email, password):
                                'Ultimo partido puntuacion', 'Time Stamp']
 
     # Get the name of the CSV file together.
-    file_name = 'team-data.csv'
+    file_name = 'data/team-data.csv'
 
     # Check if the file exists
     file_exists = os.path.exists(file_name)
@@ -319,7 +319,7 @@ def scrape_la_liga_standings (api_key):
 
     headers = {
         'x-rapidapi-host': "v3.football.api-sports.io",
-        'x-rapidapi-key': api_football
+        'x-rapidapi-key': api_key
     }
 
     # Specify the type of API request to make, league = 140 stands for La Liga,
@@ -399,7 +399,7 @@ def scrape_la_liga_standings (api_key):
         team_data_list.append(values)
 
     # Specify the CSV file path
-    csv_file_path = "standings-la-liga.csv"
+    csv_file_path = "data/standings-la-liga.csv"
     file_exists = os.path.exists(csv_file_path)
 
     # Writing data to CSV file

@@ -1,5 +1,6 @@
 from datetime import datetime
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -16,8 +17,10 @@ def scrape_market_section_fantasy ( email , password ):
     mundo_deportivo_liga_fantasy = "https://mister.mundodeportivo.com/new-onboarding/auth/email"
 
     driver.get(mundo_deportivo_liga_fantasy)
-    wait1 = WebDriverWait(driver, 10000)
-    wait2 = WebDriverWait(driver, 10000)
+    wait1 = WebDriverWait(driver, 5)
+    wait2 = WebDriverWait(driver, 5)
+    wait3 = WebDriverWait(driver, 5)
+    wait4 = WebDriverWait(driver, 5)
 
     # Wait for the cookies to appear and click the button to accept them.
     button_cookies = wait1.until(
@@ -49,18 +52,22 @@ def scrape_market_section_fantasy ( email , password ):
     )
     submit_button.click()
 
-    # Special wait to skip the first tutorial.
-    """"
-    skip_button = wait1.until(
-        ec.element_to_be_clickable(
-            (
-                By.CLASS_NAME,
-                'btn-tutorial-skip'
+    # Special wait to skip the first tutorial, when we start with a new account it will appear, so better to check it.
+    try:
+
+        skip_button = wait3.until(
+            ec.element_to_be_clickable(
+                (
+                    By.CLASS_NAME,
+                    'btn-tutorial-skip'
+                )
             )
         )
-    )
-    skip_button.click()
-    """
+        skip_button.click()
+
+    except Exception:
+        # Element not found, we just continue.
+        pass
 
     # Select the markets section, wait ten seconds as it usually takes some time to load the page.
     markets_section = wait2.until(
@@ -74,7 +81,14 @@ def scrape_market_section_fantasy ( email , password ):
     markets_section.click()
 
     # Get the table with all the player markets information.
-    market_players_table = driver.find_element(By.ID, 'list-on-sale')
+    market_players_table = wait4.until(
+        ec.element_to_be_clickable(
+            (
+                By.ID,
+                'list-on-sale'
+            )
+        )
+    )
 
     # Create an array to save players info.
     players = []
@@ -92,7 +106,7 @@ def scrape_market_section_fantasy ( email , password ):
         player_information = players_market_information_array[i:i + 9]
         players.append(player_information)
 
-    # Start process to save all the information in a CSV.
+    # ------ Start process to save all the information in a CSV. ------
 
     # Create the name of the csv
     current_datetime = datetime.now()
@@ -421,6 +435,6 @@ if __name__ == '__main__':
     api_football = config['api-football']
 
     scrape_market_section_fantasy(email_fantasy, password_fantasy)
-    scrape_personal_team_fantasy(email_fantasy, password_fantasy)
-    scrape_la_liga_standings(api_football)
+    #scrape_personal_team_fantasy(email_fantasy, password_fantasy)
+    #scrape_la_liga_standings(api_football)
 

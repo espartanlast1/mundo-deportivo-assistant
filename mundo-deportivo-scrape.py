@@ -1,6 +1,9 @@
+import time
 from datetime import datetime
+from selenium.webdriver.support import expected_conditions as EC
+
 from selenium import webdriver
-from selenium.common import NoSuchElementException
+from selenium.common import NoSuchElementException, ElementClickInterceptedException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -280,12 +283,14 @@ def scrape_all_players_fantasy( email ,password ):
     driver = webdriver.Chrome()
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
-
     mundo_deportivo_liga_fantasy = "https://mister.mundodeportivo.com/new-onboarding/auth/email"
 
     driver.get(mundo_deportivo_liga_fantasy)
-    wait1 = WebDriverWait(driver, 10000)
-    wait2 = WebDriverWait(driver, 10000)
+    wait1 = WebDriverWait(driver, 5)
+    wait2 = WebDriverWait(driver, 5)
+    wait3 = WebDriverWait(driver, 5)
+    wait4 = WebDriverWait(driver, 5)
+
 
     # Wait for the cookies to appear and click the button to accept them.
     button_cookies = wait1.until(
@@ -307,7 +312,7 @@ def scrape_all_players_fantasy( email ,password ):
     password_input.send_keys(password)
 
     # Click on the login button.
-    submit_button = wait1.until(
+    submit_button = wait2.until(
         ec.element_to_be_clickable(
             (
                 By.XPATH,
@@ -317,16 +322,91 @@ def scrape_all_players_fantasy( email ,password ):
     )
     submit_button.click()
 
-    # Select the markets section, wait ten seconds as it usually takes some time to load the page.
-    table_section = wait2.until(
+    # Special wait to skip the first tutorial, when we start with a new account it will appear, so better to check it.
+    try:
+
+        skip_button = wait3.until(
+            ec.element_to_be_clickable(
+                (
+                    By.CLASS_NAME,
+                    'btn-tutorial-skip'
+                )
+            )
+        )
+        skip_button.click()
+
+    except Exception:
+        # Element not found, we just continue.
+        pass
+
+    # Select the more section, wait five seconds as it usually takes some time to load the page.
+    more_section = wait4.until(
         ec.element_to_be_clickable(
             (
                 By.XPATH,
-                '//*[@id="content"]/header/div[2]/ul/li[4]/a'
+                '//*[@id="content"]/header/div[2]/ul/li[5]/a'
             )
         )
     )
-    table_section.click()
+    more_section.click()
+
+    players_section = wait4.until(
+        ec.element_to_be_clickable(
+            (
+                By.XPATH,
+                '//*[@id="content"]/div[2]/div[1]/button[2]'
+            )
+        )
+    )
+    players_section.click()
+
+    # ------------- Process to check if the more button exists, if it does, continue to click it until it disappears.
+    button_locator = (By.CLASS_NAME, 'search-players-more')
+
+    # Set a maximum number of attempts to click the button (optional)
+    max_attempts = 15
+    attempt = 1
+    button_exists = True
+
+    # Create a loop to continuously check for the button's existence
+    while button_exists and attempt <= max_attempts:
+        try:
+            # Now, wait for the button to be clickable
+            more_players_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(button_locator)
+            )
+
+            # Click the button
+            more_players_button.click()
+
+            # Give some time for content to load (you can adjust this sleep duration as needed)
+            time.sleep(5)
+
+            # Increment the attempt counter
+            attempt += 1
+        except (NoSuchElementException, ElementClickInterceptedException,TimeoutException):
+            # The button is not found, set the flag to False
+            button_exists = False
+
+    # After the loop, perform another action if the button no longer exists
+    if not button_exists:
+        # Wait for the players table to be clickable
+        players_table = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CLASS_NAME, 'player-list'))
+        )
+        print(players_table.text)
+
+        link_elements = players_table.find_elements(By.CSS_SELECTOR, 'a.btn-sw-link')
+
+        hrefs = [link.get_attribute('href') for link in link_elements]
+
+        i = 0
+        for href in hrefs:
+            print(href)
+            i = i + 1
+
+        print(i)
+
 
 def scrape_la_liga_standings (api_key):
     conn = http.client.HTTPSConnection("v3.football.api-sports.io")
@@ -434,7 +514,8 @@ if __name__ == '__main__':
     password_fantasy = config['password']
     api_football = config['api-football']
 
-    scrape_market_section_fantasy(email_fantasy, password_fantasy)
-    scrape_personal_team_fantasy(email_fantasy, password_fantasy)
-    scrape_la_liga_standings(api_football)
+    #scrape_market_section_fantasy(email_fantasy, password_fantasy)
+    #scrape_personal_team_fantasy(email_fantasy, password_fantasy)
+    #scrape_la_liga_standings(api_football)
+    scrape_all_players_fantasy(email_fantasy,password_fantasy)
 

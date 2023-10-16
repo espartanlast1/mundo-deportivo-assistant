@@ -83,7 +83,7 @@ position_mapping = {
     "pos-3": "Medio Campista",
     "pos-4": "Delantero"
 }
-
+user_hrefs = list(set(user_hrefs))
 # Create a CSV file for storing the data
 csv_filename = "prueba.csv"
 with open(csv_filename, 'w', newline='') as csv_file:
@@ -130,17 +130,14 @@ with open(csv_filename, 'w', newline='') as csv_file:
             position = position_mapping.get(position_class, "Unknown")
 
             csv_writer.writerow([TeamName,position, name, surname])
-
-            # Navigate back to the original page to proceed to the next user
-            driver.back()
+        driver.get(user_element)
         soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-        time.sleep(1)
         # Select the parent div element with the class "wrapper" to narrow down the search
-        parent_div = soup.find("div", class_="wrapper items thin-scrollbar")
+        parent_div = soup.find(name="div", class_="wrapper items thin-scrollbar")
 
         # Find all div elements with class "item" within the parent div
-        items = parent_div.find_all("div", class_="item")
+        items = parent_div.find_all(name="div", class_="item")
 
         # Initialize a dictionary to store label-value pairs
         label_value_dict = {}
@@ -161,8 +158,6 @@ with open(csv_filename, 'w', newline='') as csv_file:
         # Write the data to the CSV file
         csv_writer.writerow([TeamName, points, average, team_value, players_count])
 
-        # Navigate back to the original page to proceed to the next user
-        driver.back()
-# Close the WebDriver when done
-driver.quit()
+    # Close the WebDriver when done
+    driver.quit()
 

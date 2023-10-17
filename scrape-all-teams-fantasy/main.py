@@ -85,13 +85,15 @@ position_mapping = {
 }
 user_hrefs = list(set(user_hrefs))
 # Create a CSV file for storing the data
-csv_filename = "prueba.csv"
-with open(csv_filename, 'w', newline='') as csv_file:
+csv_filename = "Teams_Players.csv"
+file_exists1 = os.path.exists(csv_filename)
+with open(csv_filename, 'a' if file_exists1 else 'w', newline='') as csv_file:
     # Create a CSV writer object
     csv_writer = csv.writer(csv_file)
 
     # Write the header row to the CSV file
-    csv_writer.writerow(["Team Name", "Position", "Name", "Surname", "Points", "Average","Value", "Players"])
+    if not file_exists1:
+        csv_writer.writerow(["Team Name", "Position", "Name", "Surname"])
 
     # Iterate through the user elements
     for user_element in user_hrefs:
@@ -110,8 +112,6 @@ with open(csv_filename, 'w', newline='') as csv_file:
 
         player_links = player_links + playersubs_links
         player_hrefs = [player_link.get_attribute("href") for player_link in player_links]
-
-        # Iterate through each player href
         for player in player_hrefs:
             driver.get(player)
             soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -148,15 +148,25 @@ with open(csv_filename, 'w', newline='') as csv_file:
             value = item.find('div', class_='value').text
             # Store the label-value pair in the dictionary
             label_value_dict[label] = value
+        # Create a CSV file for storing the team data
+        team_csv_filename = "TeamsData.csv"
+        file_exists = os.path.exists(team_csv_filename)
+        with open(team_csv_filename, 'a' if file_exists else 'w', newline='') as team_csv_file:
+            # Iterate through each player href
+            team_csv_writer = csv.writer(team_csv_file)
 
-        # Now, you can access the data using the label as the key
-        points = label_value_dict.get("Puntos")
-        average = label_value_dict.get("Media")
-        team_value = label_value_dict.get("Valor")
-        players_count = label_value_dict.get("Jugadores")
+            # Write the header
+            if not file_exists:
+                team_csv_writer .writerow(["Team Name", "Puntos", "Media", "Valor", "Jugadores"])
 
-        # Write the data to the CSV file
-        csv_writer.writerow([TeamName, points, average, team_value, players_count])
+            # Now, you can access the data using the label as the key
+            points = label_value_dict.get("Puntos")
+            average = label_value_dict.get("Media")
+            team_value = label_value_dict.get("Valor")
+            players_count = label_value_dict.get("Jugadores")
+
+            # Write the data to the CSV file
+            team_csv_writer.writerow([TeamName, points, average, team_value, players_count])
 
     # Close the WebDriver when done
     driver.quit()

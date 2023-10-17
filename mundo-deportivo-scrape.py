@@ -400,12 +400,115 @@ def scrape_all_players_fantasy( email ,password ):
 
         hrefs = [link.get_attribute('href') for link in link_elements]
 
-        i = 0
-        for href in hrefs:
-            print(href)
-            i = i + 1
+        with open('data/fantasy-players-links.csv', 'w', newline='') as file:
+            writer = csv.writer(file)
+            for href in hrefs:
+                writer.writerow([href])
 
-        print(i)
+def scrape_players_stats_fantasy(email , password):
+    driver = webdriver.Chrome()
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--headless")
+    mundo_deportivo_liga_fantasy = "https://mister.mundodeportivo.com/new-onboarding/auth/email"
+
+    driver.get(mundo_deportivo_liga_fantasy)
+    wait1 = WebDriverWait(driver, 5)
+    wait2 = WebDriverWait(driver, 5)
+    wait3 = WebDriverWait(driver, 5)
+    wait4 = WebDriverWait(driver, 5)
+
+
+    # Wait for the cookies to appear and click the button to accept them.
+    button_cookies = wait1.until(
+        ec.element_to_be_clickable(
+            (
+                By.ID,
+                'didomi-notice-agree-button'
+            )
+        )
+    )
+
+    button_cookies.click()
+
+    # Enter the email and password.
+    email_input = driver.find_element(By.ID, 'email')
+    email_input.send_keys(email)
+
+    password_input = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[2]/div/form/div[2]/input')
+    password_input.send_keys(password)
+
+    # Click on the login button.
+    submit_button = wait2.until(
+        ec.element_to_be_clickable(
+            (
+                By.XPATH,
+                '//*[@id="app"]/div/div[2]/div/form/div[3]/button'
+            )
+        )
+    )
+    submit_button.click()
+
+    # Special wait to skip the first tutorial, when we start with a new account it will appear, so better to check it.
+    try:
+
+        skip_button = wait3.until(
+            ec.element_to_be_clickable(
+                (
+                    By.CLASS_NAME,
+                    'btn-tutorial-skip'
+                )
+            )
+        )
+        skip_button.click()
+
+    except Exception:
+        # Element not found, we just continue.
+        pass
+
+    filename = 'data/fantasy-players-links.csv'
+    url_csv_file = []
+
+    with open(filename, mode='r') as file:
+        reader = csv.reader(file)
+        url_csv_file = list(reader)
+
+        # displaying the contents of the CSV file
+    for row in url_csv_file:
+        for url in row:
+
+            driver.get(url)
+
+            players_info = driver.find_element(By.XPATH, '//*[@id="content"]/div[5]/div[1]/div/div[1]')
+            players_name = players_info.find_element(By.CLASS_NAME, 'name').text
+            players_surname = players_info.find_element(By.CLASS_NAME, 'surname').text
+
+            players_file_name = players_name + "-" + players_surname + ".csv"
+            player_structure_header = ['Valor Actual', 'Puntos', 'Media', 'Partidos',
+                                       'Goles', 'Tarjetas','Fecha', 'Valor Historico', 'Jornada 1', 'Time Stamp', ]
+
+            # Get the player "Valor" table.
+            script_element = driver.find_element(By.XPATH, '/html/body/script[14]')
+            script_content = script_element.get_attribute("text")
+            value_content = script_content.split("playerVideoOffset")[0].split(";")[1].strip()
+
+            json_str = value_content[value_content.index('(') + 1:-1]
+            data = json.loads(json_str)
+            points = data['points']
+
+            with open(players_file_name, 'w', newline='') as archivo_csv:
+                writer = csv.writer(archivo_csv)
+                writer.writerow(player_structure_header)
+
+                # Save the date and value for each player
+                for point in points:
+                    # Assuming 'Valor' and 'Fecha' are the columns you want to save the data into
+                    row = [''] * len(player_structure_header)
+                    row[player_structure_header.index('Valor Historico')] = point['value']
+                    row[player_structure_header.index('Fecha')] = point['date']
+                    writer.writerow(row)
+
+
+
 
 
 def scrape_la_liga_standings (api_key):
@@ -517,5 +620,7 @@ if __name__ == '__main__':
     #scrape_market_section_fantasy(email_fantasy, password_fantasy)
     #scrape_personal_team_fantasy(email_fantasy, password_fantasy)
     #scrape_la_liga_standings(api_football)
-    scrape_all_players_fantasy(email_fantasy,password_fantasy)
+    #scrape_all_players_fantasy(email_fantasy,password_fantasy)
+    scrape_players_stats_fantasy(email_fantasy,password_fantasy)
+
 

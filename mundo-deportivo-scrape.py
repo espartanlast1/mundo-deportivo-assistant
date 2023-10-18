@@ -124,7 +124,7 @@ def scrape_market_section_fantasy ( email , password ):
                                'Ultimo partido puntuacion', 'Venta', 'Time Stamp']
 
     # Get the name of the CSV file together.
-    file_name = 'data/market-data.csv'
+    file_name = 'data/fantasy-market-data.csv'
 
     # Check if the file exists
     file_exists = os.path.exists(file_name)
@@ -256,7 +256,7 @@ def scrape_personal_team_fantasy ( email, password):
                                'Ultimo partido puntuacion', 'Time Stamp']
 
     # Get the name of the CSV file together.
-    file_name = 'data/team-data.csv'
+    file_name = 'data/fantasy-team-data.csv'
 
     # Check if the file exists
     file_exists = os.path.exists(file_name)
@@ -415,7 +415,6 @@ def scrape_players_stats_fantasy(email , password):
     wait1 = WebDriverWait(driver, 5)
     wait2 = WebDriverWait(driver, 5)
     wait3 = WebDriverWait(driver, 5)
-    wait4 = WebDriverWait(driver, 5)
 
 
     # Wait for the cookies to appear and click the button to accept them.
@@ -478,38 +477,96 @@ def scrape_players_stats_fantasy(email , password):
 
             driver.get(url)
 
+            # Get all the information to call the CSV according to the player name and surname.
             players_info = driver.find_element(By.XPATH, '//*[@id="content"]/div[5]/div[1]/div/div[1]')
             players_name = players_info.find_element(By.CLASS_NAME, 'name').text
             players_surname = players_info.find_element(By.CLASS_NAME, 'surname').text
+            player_complete_name = players_name + players_surname
 
-            players_file_name = players_name + "-" + players_surname + ".csv"
+            # Get all the player's metadata.
+            players_meta_data = "data/players/fantasy-metadata-players.csv"
+            players_meta_data_header = ['Player full name', 'Current Value', 'Points', 'Average', 'Matches', 'Goals',
+                                        'Cards', 'Time Stamp']
+
+            player_wrapper = driver.find_elements(By.CSS_SELECTOR, 'div.player-stats-wrapper div.value')
+
+            valor_actual = player_wrapper[0].text
+            puntos = player_wrapper[1].text
+            media = player_wrapper[2].text
+            partidos = player_wrapper[3].text
+            goles = player_wrapper[4].text
+            tarjetas = player_wrapper[5].text
+            time_stamp = datetime.now()
+
+            file_exists = os.path.exists(players_meta_data)
+
+            with open(players_meta_data, 'a' if file_exists else 'w', newline='') as archivo_csv:
+
+                writer = csv.writer(archivo_csv)
+
+                # Write the CSV header.
+                if not file_exists:
+                    writer.writerow(players_meta_data_header)
+
+                writer.writerow(
+                    [player_complete_name, valor_actual, puntos, media, partidos, goles, tarjetas, time_stamp])
+                # Save all the data for each player.
+                """"
+                
+                for point in points:
+                    # Assuming 'Valor' and 'Fecha' are the columns you want to save the data into
+
+                    row = [''] * len(player_structure_header)
+                    row[player_structure_header.index('Name')] = player_complete_name
+                    row[player_structure_header.index('Historic Value')] = point['value']
+                    row[player_structure_header.index('Date')] = point['date']
+                    writer.writerow(row)
+
+            players_file_name_market = "data/players/" + players_name + "-" + players_surname + ".csv"
+
+            # Define the structure of the CSV.
             player_structure_header = ['Valor Actual', 'Puntos', 'Media', 'Partidos',
-                                       'Goles', 'Tarjetas','Fecha', 'Valor Historico', 'Jornada 1', 'Time Stamp', ]
+                                       'Goles', 'Tarjetas', 'Fecha', 'Valor Historico',
+                                       'Jornada 1', 'Time Stamp', ]
+
+            players_market_info = "data/players/market-variation.csv"
+
+
+            # Get the player basic information.
 
             # Get the player "Valor" table.
+            players_market_info = "data/players/market-variation.csv"
+
+            players_market_info_header = ['Name', 'Date', 'Historic Value']
+
             script_element = driver.find_element(By.XPATH, '/html/body/script[14]')
             script_content = script_element.get_attribute("text")
             value_content = script_content.split("playerVideoOffset")[0].split(";")[1].strip()
 
+            # Transform the "Valor" table into a JSON so that it can be later store into a CSV.
             json_str = value_content[value_content.index('(') + 1:-1]
             data = json.loads(json_str)
             points = data['points']
 
-            with open(players_file_name, 'w', newline='') as archivo_csv:
-                writer = csv.writer(archivo_csv)
+            with open(players_market_info, 'w', newline='') as archivo_csv:
+
+                writer = csv.writer(players_market_info_header)
+
+                # Write the CSV header.
                 writer.writerow(player_structure_header)
 
-                # Save the date and value for each player
+                #writer.writerow([valor_actual, puntos, media, partidos, goles, tarjetas])
+                # Save all the data for each player.
+
                 for point in points:
                     # Assuming 'Valor' and 'Fecha' are the columns you want to save the data into
+
                     row = [''] * len(player_structure_header)
-                    row[player_structure_header.index('Valor Historico')] = point['value']
-                    row[player_structure_header.index('Fecha')] = point['date']
+                    row[player_structure_header.index('Name')] = player_complete_name
+                    row[player_structure_header.index('Historic Value')] = point['value']
+                    row[player_structure_header.index('Date')] = point['date']
                     writer.writerow(row)
-
-
-
-
+                    """""
 
 def scrape_la_liga_standings (api_key):
     conn = http.client.HTTPSConnection("v3.football.api-sports.io")
@@ -617,10 +674,10 @@ if __name__ == '__main__':
     password_fantasy = config['password']
     api_football = config['api-football']
 
-    #scrape_market_section_fantasy(email_fantasy, password_fantasy)
-    #scrape_personal_team_fantasy(email_fantasy, password_fantasy)
-    #scrape_la_liga_standings(api_football)
-    #scrape_all_players_fantasy(email_fantasy,password_fantasy)
+    scrape_market_section_fantasy(email_fantasy, password_fantasy)
+    scrape_personal_team_fantasy(email_fantasy, password_fantasy)
+    scrape_la_liga_standings(api_football)
+    scrape_all_players_fantasy(email_fantasy,password_fantasy)
     scrape_players_stats_fantasy(email_fantasy,password_fantasy)
 
 

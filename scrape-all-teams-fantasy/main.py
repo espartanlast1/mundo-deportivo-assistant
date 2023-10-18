@@ -85,7 +85,7 @@ position_mapping = {
 }
 user_hrefs = list(set(user_hrefs))
 # Create a CSV file for storing the data
-csv_filename = "Teams_Players.csv"
+csv_filename = "fantasy-teams-players.csv"
 file_exists1 = os.path.exists(csv_filename)
 with open(csv_filename, 'a' if file_exists1 else 'w', newline='') as csv_file:
     # Create a CSV writer object
@@ -149,7 +149,7 @@ with open(csv_filename, 'a' if file_exists1 else 'w', newline='') as csv_file:
             # Store the label-value pair in the dictionary
             label_value_dict[label] = value
         # Create a CSV file for storing the team data
-        team_csv_filename = "TeamsData.csv"
+        team_csv_filename = "fantasy-teams-data.csv"
         file_exists = os.path.exists(team_csv_filename)
         with open(team_csv_filename, 'a' if file_exists else 'w', newline='') as team_csv_file:
             # Iterate through each player href

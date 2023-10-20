@@ -147,9 +147,11 @@ def scrape_market_section_fantasy(email, password):
 
     driver.quit()
 
+
 def scrape_personal_team_fantasy(email, password):
     driver = webdriver.Chrome()
-    chrome_options = webdriver.Chrome()
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--headless")
 
     mundo_deportivo_liga_fantasy = "https://mister.mundodeportivo.com/new-onboarding/auth/email"
 
@@ -282,6 +284,7 @@ def scrape_personal_team_fantasy(email, password):
 
     driver.quit()
 
+
 def scrape_all_players_fantasy(email, password):
     driver = webdriver.Chrome()
     chrome_options = webdriver.ChromeOptions()
@@ -407,6 +410,7 @@ def scrape_all_players_fantasy(email, password):
             for href in hrefs:
                 writer.writerow([href])
 
+
 def scrape_players_stats_fantasy(email, password):
     driver = webdriver.Chrome()
     chrome_options = webdriver.ChromeOptions()
@@ -418,7 +422,6 @@ def scrape_players_stats_fantasy(email, password):
     wait2 = WebDriverWait(driver, 5)
     wait3 = WebDriverWait(driver, 5)
     wait4 = WebDriverWait(driver, 5)
-
 
     # Wait for the cookies to appear and click the button to accept them.
     button_cookies = wait1.until(
@@ -476,10 +479,11 @@ def scrape_players_stats_fantasy(email, password):
         # displaying the contents of the CSV file
     for row in url_csv_file:
         for url in row:
-
             driver.get(url)
 
             """ ------ Store players metadata ------ """
+
+            scrape_fantasy_players_meta_data(driver)
 
             # Get all the information to call the CSV according to the player name and surname.
             players_info = driver.find_element(By.XPATH, '//*[@id="content"]/div[5]/div[1]/div/div[1]')
@@ -487,6 +491,7 @@ def scrape_players_stats_fantasy(email, password):
             players_surname = players_info.find_element(By.CLASS_NAME, 'surname').text
             player_complete_name = players_name + players_surname
 
+            """
             # Get all the player's metadata.
             players_meta_data = "data/players/fantasy-metadata-players.csv"
             players_meta_data_header = ['Player full name', 'Current Value', 'Points', 'Average', 'Matches', 'Goals',
@@ -494,7 +499,6 @@ def scrape_players_stats_fantasy(email, password):
 
             player_wrapper = driver.find_elements(By.CSS_SELECTOR, 'div.player-stats-wrapper div.value')
 
-            """
 
             valor_actual = player_wrapper[0].text
             puntos = player_wrapper[1].text
@@ -517,11 +521,11 @@ def scrape_players_stats_fantasy(email, password):
                 writer.writerow(
                     [player_complete_name, valor_actual, puntos, media, partidos, goles, tarjetas, time_stamp])
                 # Save all the data for each player.
-
+            """
             # ------ Store players value table ------ 
-            """
-            """
+            scrape_fantasy_players_value_table(driver, player_complete_name)
 
+            """
             # Define the structure of the CSV.
             player_structure_header = ['Full Name', 'Value', 'Date']
 
@@ -557,15 +561,311 @@ def scrape_players_stats_fantasy(email, password):
                     writer.writerow(row)
             """
 
+            """ ------ Store players game week stats and providers (AS,Marca, SofaScore, etc) information ------ """
+
+            scrape_fantasy_players_game_week(driver, player_complete_name)
+            """
+            # Find the points box.
+            players_game_weeks = driver.find_elements(By.CLASS_NAME, "btn-player-gw")
+
+            # Go through each game week
+            for player_game_week in players_game_weeks:
+                try:
+                    # Define an array where all the information will be store in order to save everything into the CSV later.
+                    player_game_week_data = []
+
+                    # Append the full name of the player to the data array.
+                    player_game_week_data.append(player_complete_name)
+
+                    # Get the data of which game week has the statics happened.
+                    game_week = player_game_week.find_element(By.CLASS_NAME, 'gw')
+
+                    #  Append the game week to the data array.
+                    player_game_week_data.append(game_week.text)
+
+                    player_game_week.click()
+
+                    time.sleep(2)
+
+                    stats_sports_providers_div = driver.find_element(By.CLASS_NAME, 'providers')
+                    stats_sports_providers = stats_sports_providers_div.find_elements(By.CLASS_NAME, 'sum')
+
+                    for stats in stats_sports_providers:
+                        stats_filtered = stats.text.replace(",", ".")
+
+                        player_game_week_data.append(stats_filtered)
+
+                    # ------- Get all the providers stats and save them in different variables --------
+
+                    # Click on player "View more stats" button.
+                    player_view_more_stats = wait3.until(
+                        ec.element_to_be_clickable(
+                            (
+                                By.XPATH,
+                                '//*[@id="popup-content"]/div[4]/div/button'
+                            )
+                        )
+                    )
+                    player_view_more_stats.click()
+
+                    time.sleep(2)
+
+                    player_stats = driver.find_element(By.XPATH, '/html/body/div[4]/div[1]/div/div[2]/table')
+                    #player_stats_breakdown = player_stats.find_elements(By.CLASS_NAME, 'td-qty')
+                    player_stats_breakdown = player_stats.find_elements(By.TAG_NAME, 'tr')
+
+
+                    for player in player_stats_breakdown:
+                        player_filter = player.text.replace(",", ".")
+                        player_game_week_data.append(player_filter)
+
+                    # Add a timestamp to the data array.
+                    player_game_week_data.append(datetime.now())
+
+                    # Save all the information into the CSV file
+                    players_game_week_stats = "data/players/fantasy-games-week-players-stats.csv"
+
+                    players_game_week_stats_header_1 = [
+                        'Player full name',
+                        'Game Week',
+                        'AS Score',
+                        'Marca Score',
+                        'Mundo Deportivo Score',
+                        'Sofa Score',
+                        'Total passes',
+                        'Accurate passes',
+                        'Total long balls',
+                        'Accurate long balls',
+                        'Total crosses',
+                        'Aerial duels lost',
+                        'Duels lost',
+                        'Duels won',
+                        'Dribbled past',
+                        'Losses',
+                        'Total dribbles',
+                        'Shots on target',
+                        'Goals',
+                        'Interceptions',
+                        'Total tackles',
+                        'Fouls received',
+                        'Fouls committed',
+                        'Offsides',
+                        'Minutes played',
+                        'Touches',
+                        'Rating',
+                        'Lost possessions',
+                        'Expected goals',
+                        'MATCH_STAT_expectedAssists',
+                        'Time Stamp'
+                    ]
+
+                    players_game_week_stats_header = [
+                        'Player full name',
+                        'Game Week',
+                        'AS Score',
+                        'Marca Score',
+                        'Mundo Deportivo Score',
+                        'Sofa Score',
+                        'Stat 1',
+                        'Stat 2',
+                        'Stat 3',
+                        'Stat 4',
+                        'Stat 5',
+                        'Stat 6',
+                        'Stat 7',
+                        'Stat 8',
+                        'Stat 9',
+                        'Stat 10',
+                        'Stat 11',
+                        'Stat 12',
+                        'Stat 13',
+                        'Stat 14',
+                        'Stat 15',
+                        'Stat 16',
+                        'Stat 17',
+                        'Stat 18',
+                        'Stat 19',
+                        'Stat 20',
+                        'Stat 21',
+                        'Stat 22',
+                        'Stat 23',
+                        'Stat 24',
+                        'Stat 25',
+                        'Stat 26',
+                        'Stat 27',
+                        'Stat 28'
+                    ]
+
+                    file_exists_players_game_week_stats = os.path.exists(players_game_week_stats)
+
+                    with open(players_game_week_stats, 'a' if file_exists_players_game_week_stats else 'w', newline='') as archivo_csv:
+
+                        writer = csv.writer(archivo_csv)
+
+                        # Write the CSV header.
+                        if not file_exists_players_game_week_stats:
+                            writer.writerow(players_game_week_stats_header)
+
+                        writer.writerow(player_game_week_data)
+
+                    close_player_game_week = wait4.until(
+                        ec.element_to_be_clickable(
+                            (
+                                By.XPATH,
+                                '//*[@id="popup"]/button'
+                            )
+                        )
+                    )
+                    close_player_game_week.click()
+
+                except Exception:
+                    # Element not found, we just continue into the next game week.
+                    continue
+                    """
+
+
+def scrape_fantasy_players_meta_data(driver):
+    # Get all the information to call the CSV according to the player name and surname.
+    players_info = driver.find_element(By.XPATH, '//*[@id="content"]/div[5]/div[1]/div/div[1]')
+    players_name = players_info.find_element(By.CLASS_NAME, 'name').text
+    players_surname = players_info.find_element(By.CLASS_NAME, 'surname').text
+    player_complete_name = players_name + players_surname
+
+    # Get all the player's metadata.
+    players_meta_data = "data/players/fantasy-metadata-players.csv"
+    players_meta_data_header = ['Player full name', 'Current Value', 'Points', 'Average', 'Matches', 'Goals',
+                                'Cards', 'Time Stamp']
+
+    player_wrapper = driver.find_elements(By.CSS_SELECTOR, 'div.player-stats-wrapper div.value')
+
+    valor_actual = player_wrapper[0].text
+    puntos = player_wrapper[1].text
+    media = player_wrapper[2].text.replace(",", ".")
+    partidos = player_wrapper[3].text
+    goles = player_wrapper[4].text
+    tarjetas = player_wrapper[5].text
+    time_stamp = datetime.now()
+
+    file_exists_players_metadata = os.path.exists(players_meta_data)
+
+    with open(players_meta_data, 'a' if file_exists_players_metadata else 'w', newline='') as archivo_csv:
+        writer = csv.writer(archivo_csv)
+
+        # Write the CSV header.
+        if not file_exists_players_metadata:
+            writer.writerow(players_meta_data_header)
+
+        writer.writerow(
+            [player_complete_name, valor_actual, puntos, media, partidos, goles, tarjetas, time_stamp])
+        # Save all the data for each player.
+
+
+def scrape_fantasy_players_value_table(driver, player_complete_name):
+    # Define the structure of the CSV.
+    player_structure_header = ['Full Name', 'Value', 'Date']
+
+    # Get the player "Valor" table.
+    players_market_info = "data/players/fantasy-market-variation.csv"
+
+    file_exists_players_value = os.path.exists(players_market_info)
+
+    script_element = driver.find_element(By.XPATH, '/html/body/script[14]')
+    script_content = script_element.get_attribute("text")
+    value_content = script_content.split("playerVideoOffset")[0].split(";")[1].strip()
+
+    # Transform the "Valor" table into a JSON so that it can be later store into a CSV.
+    json_str = value_content[value_content.index('(') + 1:-1]
+    data = json.loads(json_str)
+    points = data['points']
+
+    with open(players_market_info, 'a' if file_exists_players_value else 'w', newline='') as archivo_csv:
+
+        writer = csv.writer(archivo_csv)
+
+        # Write the CSV header.
+        if not file_exists_players_value:
+            writer.writerow(player_structure_header)
+
+        for point in points:
+            # Assuming 'Valor' and 'Fecha' are the columns you want to save the data into
+
+            row = [''] * len(player_structure_header)
+            row[player_structure_header.index('Full Name')] = player_complete_name
+            row[player_structure_header.index('Value')] = point['value']
+            row[player_structure_header.index('Date')] = point['date']
+            writer.writerow(row)
+
+
+def scrape_fantasy_players_game_week(driver, player_complete_name):
+    wait3 = WebDriverWait(driver, 5)
+    wait4 = WebDriverWait(driver, 5)
+
+    # Find the points box.
+    players_game_weeks = driver.find_elements(By.CLASS_NAME, "btn-player-gw")
+
+    # Go through each game week
+    for player_game_week in players_game_weeks:
+        try:
+            # Define an array where all the information will be store in order to save everything into the CSV later.
+            player_game_week_data = []
+
+            # Append the full name of the player to the data array.
+            player_game_week_data.append(player_complete_name)
+
+            # Get the data of which game week has the statics happened.
+            game_week = player_game_week.find_element(By.CLASS_NAME, 'gw')
+
+            #  Append the game week to the data array.
+            player_game_week_data.append(game_week.text)
+
+            player_game_week.click()
+
+            time.sleep(2)
+
+            stats_sports_providers_div = driver.find_element(By.CLASS_NAME, 'providers')
+            stats_sports_providers = stats_sports_providers_div.find_elements(By.CLASS_NAME, 'sum')
+
+            for stats in stats_sports_providers:
+                stats_filtered = stats.text.replace(",", ".")
+
+                player_game_week_data.append(stats_filtered)
+
+            # ------- Get all the providers stats and save them in different variables --------
+
+            # Click on player "View more stats" button.
+            player_view_more_stats = wait3.until(
+                ec.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        '//*[@id="popup-content"]/div[4]/div/button'
+                    )
+                )
+            )
+            player_view_more_stats.click()
+
+            time.sleep(2)
+
+            player_stats = driver.find_element(By.XPATH, '/html/body/div[4]/div[1]/div/div[2]/table')
+            # player_stats_breakdown = player_stats.find_elements(By.CLASS_NAME, 'td-qty')
+            player_stats_breakdown = player_stats.find_elements(By.TAG_NAME, 'tr')
+
+            for player in player_stats_breakdown:
+                player_filter = player.text.replace(",", ".")
+                player_game_week_data.append(player_filter)
+
+            # Add a timestamp to the data array.
+            player_game_week_data.append(datetime.now())
+
+            # Save all the information into the CSV file
             players_game_week_stats = "data/players/fantasy-games-week-players-stats.csv"
-            players_game_week_stats = [
+
+            players_game_week_stats_header_1 = [
                 'Player full name',
                 'Game Week',
                 'AS Score',
                 'Marca Score',
                 'Mundo Deportivo Score',
                 'Sofa Score',
-                'Time Stamp',
                 'Total passes',
                 'Accurate passes',
                 'Total long balls',
@@ -589,55 +889,73 @@ def scrape_players_stats_fantasy(email, password):
                 'Rating',
                 'Lost possessions',
                 'Expected goals',
-                'MATCH_STAT_expectedAssists'
+                'MATCH_STAT_expectedAssists',
+                'Time Stamp'
             ]
 
-            # Find the points box.
-            players_game_weeks = driver.find_elements(By.CLASS_NAME, "btn-player-gw")
+            players_game_week_stats_header = [
+                'Player full name',
+                'Game Week',
+                'AS Score',
+                'Marca Score',
+                'Mundo Deportivo Score',
+                'Sofa Score',
+                'Stat 1',
+                'Stat 2',
+                'Stat 3',
+                'Stat 4',
+                'Stat 5',
+                'Stat 6',
+                'Stat 7',
+                'Stat 8',
+                'Stat 9',
+                'Stat 10',
+                'Stat 11',
+                'Stat 12',
+                'Stat 13',
+                'Stat 14',
+                'Stat 15',
+                'Stat 16',
+                'Stat 17',
+                'Stat 18',
+                'Stat 19',
+                'Stat 20',
+                'Stat 21',
+                'Stat 22',
+                'Stat 23',
+                'Stat 24',
+                'Stat 25',
+                'Stat 26',
+                'Stat 27',
+                'Stat 28'
+            ]
 
-            # Go through each game week
-            for player_game_week in players_game_weeks:
-                try:
-                    player_game_week.click()
-                    time.sleep(2)
-                    stats_sports_providers = driver.find_element(By.CLASS_NAME, 'providers')
+            file_exists_players_game_week_stats = os.path.exists(players_game_week_stats)
 
+            with open(players_game_week_stats, 'a' if file_exists_players_game_week_stats else 'w',
+                      newline='') as archivo_csv:
 
-                    # ------- Get all the providers stats and save them in different variables --------
+                writer = csv.writer(archivo_csv)
 
+                # Write the CSV header.
+                if not file_exists_players_game_week_stats:
+                    writer.writerow(players_game_week_stats_header)
 
-                    # Click on player "View more stats" button.
-                    player_view_more_stats = driver.find_element(By.XPATH, '//*[@id="popup-content"]/div[4]/div/button')
-                    player_view_more_stats.click()
+                writer.writerow(player_game_week_data)
 
-                    time.sleep(2)
-                    player_stats = driver.find_element(By.XPATH, '/html/body/div[4]/div[1]/div/div[2]/table')
-
-                    # ------- Get all the player stats and save them in different variables --------
-
-
-                    print(player_stats.text)
-
-                    # Save all the information into the CSV file
-
-                    close_player_game_week = wait4.until(
-                        ec.element_to_be_clickable(
-                            (
-                                By.XPATH,
-                                '//*[@id="popup"]/button'
-                            )
-                        )
+            close_player_game_week = wait4.until(
+                ec.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        '//*[@id="popup"]/button'
                     )
-                    close_player_game_week.click()
+                )
+            )
+            close_player_game_week.click()
 
-                except Exception:
-                    # Element not found, we just continue.
-                    continue
-
-
-
-
-
+        except Exception:
+            # Element not found, we just continue into the next game week.
+            continue
 
 def scrape_teams_information(email, password):
     driver = webdriver.Chrome()
@@ -899,9 +1217,9 @@ if __name__ == '__main__':
     password_fantasy = config['password']
     api_football = config['api-football']
 
-    #scrape_market_section_fantasy(email_fantasy, password_fantasy)
-    #scrape_personal_team_fantasy(email_fantasy, password_fantasy)
-    #scrape_la_liga_standings(api_football)
-    #scrape_all_players_fantasy(email_fantasy,password_fantasy)
+    scrape_market_section_fantasy(email_fantasy, password_fantasy)
+    scrape_personal_team_fantasy(email_fantasy, password_fantasy)
+    scrape_la_liga_standings(api_football)
+    scrape_all_players_fantasy(email_fantasy,password_fantasy)
     scrape_players_stats_fantasy(email_fantasy, password_fantasy)
-    #scrape_teams_information(email_fantasy, password_fantasy)
+    scrape_teams_information(email_fantasy, password_fantasy)

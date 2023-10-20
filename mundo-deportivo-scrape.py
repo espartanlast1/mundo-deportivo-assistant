@@ -417,6 +417,8 @@ def scrape_players_stats_fantasy(email, password):
     wait1 = WebDriverWait(driver, 5)
     wait2 = WebDriverWait(driver, 5)
     wait3 = WebDriverWait(driver, 5)
+    wait4 = WebDriverWait(driver, 5)
+
 
     # Wait for the cookies to appear and click the button to accept them.
     button_cookies = wait1.until(
@@ -492,6 +494,8 @@ def scrape_players_stats_fantasy(email, password):
 
             player_wrapper = driver.find_elements(By.CSS_SELECTOR, 'div.player-stats-wrapper div.value')
 
+            """
+
             valor_actual = player_wrapper[0].text
             puntos = player_wrapper[1].text
             media = player_wrapper[2].text.replace(",", ".")
@@ -514,7 +518,9 @@ def scrape_players_stats_fantasy(email, password):
                     [player_complete_name, valor_actual, puntos, media, partidos, goles, tarjetas, time_stamp])
                 # Save all the data for each player.
 
-            """ ------ Store players value table ------ """
+            # ------ Store players value table ------ 
+            """
+            """
 
             # Define the structure of the CSV.
             player_structure_header = ['Full Name', 'Value', 'Date']
@@ -549,6 +555,87 @@ def scrape_players_stats_fantasy(email, password):
                     row[player_structure_header.index('Value')] = point['value']
                     row[player_structure_header.index('Date')] = point['date']
                     writer.writerow(row)
+            """
+
+            players_game_week_stats = "data/players/fantasy-games-week-players-stats.csv"
+            players_game_week_stats = [
+                'Player full name',
+                'Game Week',
+                'AS Score',
+                'Marca Score',
+                'Mundo Deportivo Score',
+                'Sofa Score',
+                'Time Stamp',
+                'Total passes',
+                'Accurate passes',
+                'Total long balls',
+                'Accurate long balls',
+                'Total crosses',
+                'Aerial duels lost',
+                'Duels lost',
+                'Duels won',
+                'Dribbled past',
+                'Losses',
+                'Total dribbles',
+                'Shots on target',
+                'Goals',
+                'Interceptions',
+                'Total tackles',
+                'Fouls received',
+                'Fouls committed',
+                'Offsides',
+                'Minutes played',
+                'Touches',
+                'Rating',
+                'Lost possessions',
+                'Expected goals',
+                'MATCH_STAT_expectedAssists'
+            ]
+
+            # Find the points box.
+            players_game_weeks = driver.find_elements(By.CLASS_NAME, "btn-player-gw")
+
+            # Go through each game week
+            for player_game_week in players_game_weeks:
+                try:
+                    player_game_week.click()
+                    time.sleep(2)
+                    stats_sports_providers = driver.find_element(By.CLASS_NAME, 'providers')
+
+
+                    # ------- Get all the providers stats and save them in different variables --------
+
+
+                    # Click on player "View more stats" button.
+                    player_view_more_stats = driver.find_element(By.XPATH, '//*[@id="popup-content"]/div[4]/div/button')
+                    player_view_more_stats.click()
+
+                    time.sleep(2)
+                    player_stats = driver.find_element(By.XPATH, '/html/body/div[4]/div[1]/div/div[2]/table')
+
+                    # ------- Get all the player stats and save them in different variables --------
+
+
+                    print(player_stats.text)
+
+                    # Save all the information into the CSV file
+
+                    close_player_game_week = wait4.until(
+                        ec.element_to_be_clickable(
+                            (
+                                By.XPATH,
+                                '//*[@id="popup"]/button'
+                            )
+                        )
+                    )
+                    close_player_game_week.click()
+
+                except Exception:
+                    # Element not found, we just continue.
+                    continue
+
+
+
 
 
 
@@ -812,9 +899,9 @@ if __name__ == '__main__':
     password_fantasy = config['password']
     api_football = config['api-football']
 
-    scrape_market_section_fantasy(email_fantasy, password_fantasy)
-    scrape_personal_team_fantasy(email_fantasy, password_fantasy)
-    scrape_la_liga_standings(api_football)
-    scrape_all_players_fantasy(email_fantasy,password_fantasy)
+    #scrape_market_section_fantasy(email_fantasy, password_fantasy)
+    #scrape_personal_team_fantasy(email_fantasy, password_fantasy)
+    #scrape_la_liga_standings(api_football)
+    #scrape_all_players_fantasy(email_fantasy,password_fantasy)
     scrape_players_stats_fantasy(email_fantasy, password_fantasy)
-    scrape_teams_information(email_fantasy, password_fantasy)
+    #scrape_teams_information(email_fantasy, password_fantasy)

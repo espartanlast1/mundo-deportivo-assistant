@@ -16,17 +16,23 @@ import re
 from bs4 import BeautifulSoup
 
 
-def scrape_market_section_fantasy(email, password):
+def login_fantasy_mundo_deportivo():
+
+    with open('config.json') as config_file:
+        config = json.load(config_file)
+
+    email_fantasy = config['email']
+    password_fantasy = config['password']
+
     driver = webdriver.Chrome()
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
     mundo_deportivo_liga_fantasy = "https://mister.mundodeportivo.com/new-onboarding/auth/email"
-
     driver.get(mundo_deportivo_liga_fantasy)
-    wait1 = WebDriverWait(driver, 5)
-    wait2 = WebDriverWait(driver, 5)
-    wait3 = WebDriverWait(driver, 5)
-    wait4 = WebDriverWait(driver, 5)
+
+    wait1 = WebDriverWait(driver, 3)
+    wait2 = WebDriverWait(driver, 3)
+    wait3 = WebDriverWait(driver, 3)
 
     # Wait for the cookies to appear and click the button to accept them.
     button_cookies = wait1.until(
@@ -42,13 +48,13 @@ def scrape_market_section_fantasy(email, password):
 
     # Enter the email and password.
     email_input = driver.find_element(By.ID, 'email')
-    email_input.send_keys(email)
+    email_input.send_keys(email_fantasy)
 
     password_input = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[2]/div/form/div[2]/input')
-    password_input.send_keys(password)
+    password_input.send_keys(password_fantasy)
 
     # Click on the login button.
-    submit_button = wait1.until(
+    submit_button = wait2.until(
         ec.element_to_be_clickable(
             (
                 By.XPATH,
@@ -75,19 +81,17 @@ def scrape_market_section_fantasy(email, password):
         # Element not found, we just continue.
         pass
 
+    return driver
+
+def scrape_market_section_fantasy():
+    driver = login_fantasy_mundo_deportivo()
+    wait_1 = WebDriverWait(driver, 3)
+
     # Select the markets section, wait ten seconds as it usually takes some time to load the page.
-    markets_section = wait2.until(
-        ec.element_to_be_clickable(
-            (
-                By.XPATH,
-                '//*[@id="content"]/header/div[2]/ul/li[2]/a'
-            )
-        )
-    )
-    markets_section.click()
+    driver.get("https://mister.mundodeportivo.com/market")
 
     # Get the table with all the player markets information.
-    market_players_table = wait4.until(
+    market_players_table = wait_1.until(
         ec.element_to_be_clickable(
             (
                 By.ID,
@@ -127,7 +131,7 @@ def scrape_market_section_fantasy(email, password):
                                'Last match score', 'Sale', 'Time Stamp']
 
     # Get the name of the CSV file together.
-    file_name = 'data/fantasy-market-data.csv'
+    file_name = 'data/fantasy-players-in-market.csv'
 
     # Check if the file exists
     file_exists = os.path.exists(file_name)
@@ -992,9 +996,9 @@ if __name__ == '__main__':
     password_fantasy = config['password']
     api_football = config['api-football']
 
-    scrape_market_section_fantasy(email_fantasy, password_fantasy)
-    scrape_personal_team_fantasy(email_fantasy, password_fantasy)
-    scrape_la_liga_standings(api_football)
-    scrape_all_players_fantasy(email_fantasy,password_fantasy)
-    scrape_players_stats_fantasy(email_fantasy, password_fantasy)
-    scrape_teams_information(email_fantasy, password_fantasy)
+    scrape_market_section_fantasy()
+    #scrape_personal_team_fantasy(email_fantasy, password_fantasy)
+    #scrape_la_liga_standings(api_football)
+    #scrape_all_players_fantasy(email_fantasy,password_fantasy)
+    #scrape_players_stats_fantasy(email_fantasy, password_fantasy)
+    #scrape_teams_information(email_fantasy, password_fantasy)

@@ -843,9 +843,15 @@ def scrape_la_liga_standings(api_key):
 
 
 if __name__ == '__main__':
-    #scrape_market_section_fantasy()
-    #scrape_personal_team_fantasy()
-    #scrape_la_liga_standings(api_football)
+=======
+    with open('config.json') as config_file:
+        config = json.load(config_file)
+
+    api_football = config['api-football']
+
+    scrape_market_section_fantasy()
+    scrape_personal_team_fantasy()
+    scrape_la_liga_standings(api_football)
     #scrape_all_players_fantasy(email_fantasy,password_fantasy)
     #scrape_players_stats_fantasy(email_fantasy, password_fantasy)
     scrape_teams_information()

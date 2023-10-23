@@ -470,7 +470,6 @@ def scrape_fantasy_players_value_table(driver, player_complete_name):
             row[player_structure_header.index('Date')] = point['date']
             writer.writerow(row)
 
-
 def scrape_fantasy_players_game_week(driver, player_complete_name):
     wait3 = WebDriverWait(driver, 5)
     wait4 = WebDriverWait(driver, 5)
@@ -632,66 +631,19 @@ def scrape_fantasy_players_game_week(driver, player_complete_name):
             # Element not found, we just continue into the next game week.
             continue
 
-def scrape_teams_information(email, password):
-    driver = webdriver.Chrome()
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless")
-
-    mundo_deportivo_liga_fantasy = "https://mister.mundodeportivo.com/new-onboarding/auth/email"
-
-    driver.get(mundo_deportivo_liga_fantasy)
-    wait1 = WebDriverWait(driver, 10000)
-    wait2 = WebDriverWait(driver, 10000)
-
-    # Wait for the cookies to appear and click the button to accept them.
-    button_cookies = wait1.until(
-        ec.element_to_be_clickable(
-            (
-                By.ID,
-                'didomi-notice-agree-button'
-            )
-        )
-    )
-
-    button_cookies.click()
-
-    # Enter the email and password.
-    email_input = driver.find_element(By.ID, 'email')
-    email_input.send_keys(email)
-
-    password_input = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[2]/div/form/div[2]/input')
-    password_input.send_keys(password)
-
-    # Click on the login button.
-    submit_button = wait1.until(
-        ec.element_to_be_clickable(
-            (
-                By.XPATH,
-                '//*[@id="app"]/div/div[2]/div/form/div[3]/button'
-            )
-        )
-    )
-    submit_button.click()
+def scrape_teams_information():
+    driver = login_fantasy_mundo_deportivo()
 
     # Select the markets section, wait ten seconds as it usually takes some time to load the page.
-    table_section = wait2.until(
-        ec.element_to_be_clickable(
-            (
-                By.XPATH,
-                '//*[@id="content"]/header/div[2]/ul/li[4]/a'
-            )
-        )
-    )
-
-    table_section.click()
+    driver.get("https://mister.mundodeportivo.com/standings")
 
     # Get the table with all the teams information.
     # Find all the user elements
     table_elements = driver.find_elements(by=By.CSS_SELECTOR, value="ul.user-list li a.btn.btn-sw-link.user")
 
-    # Extract the href values from each user element
+    # Extract the href values from each userTeam element
     user_hrefs = [user.get_attribute("href") for user in table_elements]
-    # Create a dictionary to map position classes to their positions
+    # Since each player can have different positon, this is so that we can find depending on which pos the player is at
     position_mapping = {
         "pos-1": "Portero",
         "pos-2": "Defensa",
@@ -699,34 +651,41 @@ def scrape_teams_information(email, password):
         "pos-4": "Delantero"
     }
     user_hrefs = list(set(user_hrefs))
-    # Create a CSV file for storing the data
+    # Create or get the name CSV file for storing the data
     csv_filename = "data/fantasy-teams-players.csv"
     file_exists1 = os.path.exists(csv_filename)
     with open(csv_filename, 'a' if file_exists1 else 'w', newline='') as csv_file:
-        # Create a CSV writer object
         csv_writer = csv.writer(csv_file)
 
-        # Write the header row to the CSV file
+        # Write the CSV header if the file exists.
         if not file_exists1:
             csv_writer.writerow(["Team Name", "Position", "Name", "Surname"])
 
-        # Iterate through the user elements
+        # goes through all the userTeams and gets each teams players
         for user_element in user_hrefs:
             driver.get(user_element)
 
             h1_element = driver.find_element(by=By.TAG_NAME, value='h1')
             TeamName = h1_element.text
-            # Navigate to the user's individual page
-            # Find the parent element that contains all the starting player links
-            lineup_players = driver.find_element(By.CLASS_NAME, "lineup-starting")
-            lineup_subs = driver.find_element(By.CLASS_NAME, "lineup-subs")
-
-            # Find all the player links within the parent element
-            player_links = lineup_players.find_elements(By.TAG_NAME, 'a')
-            playersubs_links = lineup_subs.find_elements(By.TAG_NAME, 'a')
-
+            # Navigate to the userTeam's individual page
+            try:
+                # Find the parent element that contains all the starting player links
+                lineup_players = driver.find_element(By.CLASS_NAME, "lineup-starting")
+                # Find all the player links the ones that are playing
+                player_links = lineup_players.find_elements(By.TAG_NAME, 'a')
+            except NoSuchElementException:
+                player_links = []
+            try:
+                lineup_subs = driver.find_element(By.CLASS_NAME, "lineup-subs")
+                # Find all the player links the ones that are subs
+                playersubs_links = lineup_subs.find_elements(By.TAG_NAME, 'a')
+            except NoSuchElementException:
+                playersubs_links = []
+            #put them all together and only get the links from the Hrefs
             player_links = player_links + playersubs_links
             player_hrefs = [player_link.get_attribute("href") for player_link in player_links]
+
+            #In this for once with all players links we get the name, surname and position
             for player in player_hrefs:
                 driver.get(player)
                 soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -757,28 +716,27 @@ def scrape_teams_information(email, password):
             # Initialize a dictionary to store label-value pairs
             label_value_dict = {}
 
-            # Extract data from each item
+            # Extract data from each item and set each label with each corresponding value 
             for item in items:
                 label = item.find('div', class_='label').text
                 value = item.find('div', class_='value').text
-                # Store the label-value pair in the dictionary
                 label_value_dict[label] = value
-            # Create a CSV file for storing the team data
+            # Create or get the name of CSV file for storing the team data
             team_csv_filename = "data/fantasy-teams-data.csv"
             file_exists = os.path.exists(team_csv_filename)
             with open(team_csv_filename, 'a' if file_exists else 'w', newline='') as team_csv_file:
-                # Iterate through each player href
                 team_csv_writer = csv.writer(team_csv_file)
-
                 # Write the header
                 if not file_exists:
                     team_csv_writer.writerow(["Team Name", "Puntos", "Media", "Valor", "Jugadores"])
 
-                # Now, you can access the data using the label as the key
                 points = label_value_dict.get("Puntos")
                 average = label_value_dict.get("Media")
                 team_value = label_value_dict.get("Valor")
                 players_count = label_value_dict.get("Jugadores")
+                # Replace commas with periods
+                average = average.replace(",", ".")
+                team_value = team_value.replace(",", ".")
 
                 # Write the data to the CSV file
                 team_csv_writer.writerow([TeamName, points, average, team_value, players_count])
@@ -885,6 +843,7 @@ def scrape_la_liga_standings(api_key):
 
 
 if __name__ == '__main__':
+=======
     with open('config.json') as config_file:
         config = json.load(config_file)
 
@@ -895,4 +854,4 @@ if __name__ == '__main__':
     scrape_la_liga_standings(api_football)
     #scrape_all_players_fantasy(email_fantasy,password_fantasy)
     #scrape_players_stats_fantasy(email_fantasy, password_fantasy)
-    #scrape_teams_information(email_fantasy, password_fantasy)
+    scrape_teams_information()

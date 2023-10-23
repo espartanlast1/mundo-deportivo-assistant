@@ -631,6 +631,11 @@ def scrape_fantasy_players_game_week(driver, player_complete_name):
             # Element not found, we just continue into the next game week.
             continue
 
+
+"""
+Function that gets all the teams competing in the fantasy league, along with their corresponding players. 
+Also, the code gets basic information on every team (money, average, etc).
+"""
 def scrape_teams_information():
     driver = login_fantasy_mundo_deportivo()
 
@@ -652,7 +657,7 @@ def scrape_teams_information():
     }
     user_hrefs = list(set(user_hrefs))
     # Create or get the name CSV file for storing the data
-    csv_filename = "data/fantasy-teams-players.csv"
+    csv_filename = "data/league/fantasy-teams-players.csv"
     file_exists1 = os.path.exists(csv_filename)
     with open(csv_filename, 'a' if file_exists1 else 'w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file)
@@ -722,7 +727,7 @@ def scrape_teams_information():
                 value = item.find('div', class_='value').text
                 label_value_dict[label] = value
             # Create or get the name of CSV file for storing the team data
-            team_csv_filename = "data/fantasy-teams-data.csv"
+            team_csv_filename = "data/league/fantasy-teams-data.csv"
             file_exists = os.path.exists(team_csv_filename)
             with open(team_csv_filename, 'a' if file_exists else 'w', newline='') as team_csv_file:
                 team_csv_writer = csv.writer(team_csv_file)
@@ -843,15 +848,27 @@ def scrape_la_liga_standings(api_key):
 
 
 if __name__ == '__main__':
-=======
+
     with open('config.json') as config_file:
         config = json.load(config_file)
 
     api_football = config['api-football']
 
-    scrape_market_section_fantasy()
-    scrape_personal_team_fantasy()
-    scrape_la_liga_standings(api_football)
-    #scrape_all_players_fantasy(email_fantasy,password_fantasy)
-    #scrape_players_stats_fantasy(email_fantasy, password_fantasy)
-    scrape_teams_information()
+    choice = input("Enter a number (1-6) to call the corresponding function: ")
+
+    if choice == "1":
+        scrape_market_section_fantasy()
+    elif choice == "2":
+        scrape_personal_team_fantasy()
+    elif choice == "3":
+        scrape_la_liga_standings(api_football)
+    elif choice == "4":
+        pass
+        #scrape_all_players_fantasy(email_fantasy, password_fantasy)
+    elif choice == "5":
+        pass
+        #scrape_players_stats_fantasy(email_fantasy, password_fantasy)
+    elif choice == "6":
+        scrape_teams_information()
+    else:
+        print("Invalid choice!")

@@ -296,7 +296,7 @@ def scrape_players_stats_fantasy(email, password):
         # Element not found, we just continue.
         pass
 
-    filename = 'data/fantasy-players-links.csv'
+    filename = 'data/players/fantasy-players-links.csv'
 
     with open(filename, mode='r') as file:
         reader = csv.reader(file)
@@ -309,7 +309,7 @@ def scrape_players_stats_fantasy(email, password):
 
             """ ------ Store players metadata ------ """
 
-            scrape_fantasy_players_meta_data(driver)
+            #scrape_fantasy_players_meta_data(driver)
 
             # Get all the information to call the CSV according to the player name and surname.
             players_info = driver.find_element(By.XPATH, '//*[@id="content"]/div[5]/div[1]/div/div[1]')
@@ -317,11 +317,11 @@ def scrape_players_stats_fantasy(email, password):
             players_surname = players_info.find_element(By.CLASS_NAME, 'surname').text
             player_complete_name = players_name + players_surname
 
-            # ------ Store players value table ------ 
+            # ------ Store players value table ------
             scrape_fantasy_players_value_table(driver, player_complete_name)
 
             # ------ Store players game week ------
-            scrape_fantasy_players_game_week(driver, player_complete_name)
+            #scrape_fantasy_players_game_week(driver, player_complete_name)
 
 
 
@@ -360,6 +360,31 @@ def scrape_fantasy_players_meta_data(driver):
             [player_complete_name, valor_actual, puntos, media, partidos, goles, tarjetas, time_stamp])
         # Save all the data for each player.
 
+def spanish_to_standard_date(spanish_date):
+    month_map = {
+        'ene': '01',
+        'feb': '02',
+        'mar': '03',
+        'abr': '04',
+        'may': '05',
+        'jun': '06',
+        'jul': '07',
+        'ago': '08',
+        'sept': '09',
+        'oct': '10',
+        'nov': '11',
+        'dic': '12'
+    }
+
+    day, month, year = spanish_date.split()
+
+    # Get the month number
+    month_num = month_map[month]
+
+    # Format the day with leading zero if necessary
+    day = day.zfill(2)
+
+    return f"{day}/{month_num}/{year}"
 
 def scrape_fantasy_players_value_table(driver, player_complete_name):
     # Define the structure of the CSV.
@@ -375,7 +400,9 @@ def scrape_fantasy_players_value_table(driver, player_complete_name):
     value_content = script_content.split("playerVideoOffset")[0].split(";")[1].strip()
 
     # Transform the "Valor" table into a JSON so that it can be later store into a CSV.
+    #time.sleep(1)
     json_str = value_content[value_content.index('(') + 1:-1]
+    #time.sleep(1)
     data = json.loads(json_str)
     points = data['points']
 
@@ -393,7 +420,7 @@ def scrape_fantasy_players_value_table(driver, player_complete_name):
             row = [''] * len(player_structure_header)
             row[player_structure_header.index('Full Name')] = player_complete_name
             row[player_structure_header.index('Value')] = point['value']
-            row[player_structure_header.index('Date')] = point['date']
+            row[player_structure_header.index('Date')] = spanish_to_standard_date(point['date'])
             writer.writerow(row)
 
 def scrape_fantasy_players_game_week(driver, player_complete_name):
@@ -647,7 +674,7 @@ def scrape_teams_information():
             # Initialize a dictionary to store label-value pairs
             label_value_dict = {}
 
-            # Extract data from each item and set each label with each corresponding value 
+            # Extract data from each item and set each label with each corresponding value
             for item in items:
                 label = item.find('div', class_='label').text
                 value = item.find('div', class_='value').text
@@ -779,6 +806,8 @@ if __name__ == '__main__':
         config = json.load(config_file)
 
     api_football = config['api-football']
+    email_fantasy = config['email']
+    password_fantasy = config['password']
 
     choice = input("Enter a number (1-6) to call the corresponding function: ")
 
@@ -791,8 +820,7 @@ if __name__ == '__main__':
     elif choice == "4":
         scrape_all_players_fantasy()
     elif choice == "5":
-        pass
-        #scrape_players_stats_fantasy(email_fantasy, password_fantasy)
+        scrape_players_stats_fantasy(email_fantasy, password_fantasy)
     elif choice == "6":
         scrape_teams_information()
     else:

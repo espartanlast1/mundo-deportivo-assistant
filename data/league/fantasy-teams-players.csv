@@ -1,0 +1,302 @@
+Team Name,Position,Name,Surname
+M32-G6_Jammin&#039;,Delantero,Cyle,Larin
+M32-G6_Jammin&#039;,Delantero,Jonathan,Bamba
+M32-G6_Jammin&#039;,Delantero,Abde,Ezzalzouli
+M32-G6_Jammin&#039;,Medio Campista,Pathé,Ciss
+M32-G6_Jammin&#039;,Medio Campista,Pablo,Barrios
+M32-G6_Jammin&#039;,Medio Campista,Ander,Barrenetxea
+M32-G6_Jammin&#039;,Defensa,Damián,Suárez
+M32-G6_Jammin&#039;,Defensa,Aritz,Elustondo
+M32-G6_Jammin&#039;,Defensa,David,García
+M32-G6_Jammin&#039;,Defensa,Álvaro,Lemos
+M32-G6_Jammin&#039;,Portero,Rui,Silva
+M32-G6_Jammin&#039;,Portero,Coke,Carrillo
+M32-G6_Jammin&#039;,Medio Campista,Abde,Rebbach
+M32-G6_Jammin&#039;,Medio Campista,André,Almeida
+M32-G6_Jammin&#039;,Medio Campista,Carlos,Benavídez
+M32-G6_Jammin&#039;,Delantero,Famara,Diédhiou
+M32-G3-GoalAnalitics,Delantero,Artem,Dovbyk
+M32-G3-GoalAnalitics,Medio Campista,Ivan,Rakitić
+M32-G3-GoalAnalitics,Medio Campista,Étienne,Capoue
+M32-G3-GoalAnalitics,Medio Campista,Bryan,Zaragoza
+M32-G3-GoalAnalitics,Medio Campista,Assane,Diao
+M32-G3-GoalAnalitics,Defensa,Sergio,Ramos
+M32-G3-GoalAnalitics,Defensa,Igor,Zubeldia
+M32-G3-GoalAnalitics,Defensa,Aitor,Paredes
+M32-G3-GoalAnalitics,Defensa,Daley,Blind
+M32-G3-GoalAnalitics,Defensa,José,Copete
+M32-G3-GoalAnalitics,Portero,Paulo,Gazzaniga
+M31-G4-DLA,Delantero,Dodi,Lukébakio
+M31-G4-DLA,Delantero,Ángel,Correa
+M31-G4-DLA,Medio Campista,Yangel,Herrera
+M31-G4-DLA,Medio Campista,Erik,Lamela
+M31-G4-DLA,Medio Campista,,Fernando
+M31-G4-DLA,Medio Campista,Boubakary,Soumaré
+M31-G4-DLA,Defensa,Hamari,Traoré
+M31-G4-DLA,Defensa,Juan,Cruz
+M31-G4-DLA,Defensa,Joseph,Aidoo
+M31-G4-DLA,Defensa,Unai,Núñez
+M31-G4-DLA,Portero,Thibaut,Courtois
+M31-G4-DLA,Portero,Antonio,Sivera
+M31-G4-DLA,Portero,Julen,Agirrezabala
+M31-G4-DLA,Defensa,,Juanpe
+M31-G4-DLA,Medio Campista,Darko,Brašanac
+M31-G4-DLA,Medio Campista,,Vitolo
+M31-G4-DLA,Delantero,Miguel,Rodríguez
+M31-G7-DraftKings,Delantero,Christian,Stuani
+M31-G7-DraftKings,Delantero,Mason,Greenwood
+M31-G7-DraftKings,Medio Campista,Aleix,García
+M31-G7-DraftKings,Medio Campista,Álvaro,García
+M31-G7-DraftKings,Medio Campista,Eduardo,Camavinga
+M31-G7-DraftKings,Medio Campista,,Pejiño
+M31-G7-DraftKings,Defensa,João,Cancelo
+M31-G7-DraftKings,Defensa,Chadi,Riad
+M31-G7-DraftKings,Defensa,Saúl,Coco
+M31-G7-DraftKings,Defensa,Toni,Lato
+M31-G7-DraftKings,Portero,Kepa,Arrizabalaga
+M31-G7-DraftKings,Defensa,Youssouf,Sabaly
+M31-G7-DraftKings,Delantero,Borja,Mayoral
+M31-G7-DraftKings,Delantero,Javi,Llabrés
+M31-G7-DraftKings,Delantero,Marc,Guiu
+M31-G2-UA2C,Delantero,Jørgen Strand,Larsen
+M31-G2-UA2C,Medio Campista,Fede,Valverde
+M31-G2-UA2C,Medio Campista,Selim,Amallah
+M31-G2-UA2C,Medio Campista,Jude,Bellingham
+M31-G2-UA2C,Medio Campista,Ianis,Hagi
+M31-G2-UA2C,Defensa,David,López
+M31-G2-UA2C,Defensa,Juanlu,Sánchez
+M31-G2-UA2C,Defensa,Jesus,Areso
+M31-G2-UA2C,Defensa,Omar,Alderete
+M31-G2-UA2C,Portero,Cristian,Rivero
+M31-G2-UA2C,Defensa,Axel,Witsel
+M31-G2-UA2C,Medio Campista,Brais,Méndez
+M31-G2-UA2C,Medio Campista,Rubén,Sobrino
+M31-G1-FutX,Delantero,Gorka,Guruzeta
+M31-G1-FutX,Delantero,,Sávio
+M31-G1-FutX,Delantero,Léo,Baptistão
+M31-G1-FutX,Medio Campista,Fran,Beltrán
+M31-G1-FutX,Medio Campista,,Suso
+M31-G1-FutX,Medio Campista,Rodrigo,Sanchez
+M31-G1-FutX,Medio Campista,Rodrigo De,Paul
+M31-G1-FutX,Defensa,José,Giménez
+M31-G1-FutX,Defensa,Diego,Rico
+M31-G1-FutX,Defensa,Fali,Giménez
+M31-G1-FutX,Portero,Sergio,Herrera
+M31-G1-FutX,Defensa,,Chumi
+M32-G7-KleinGroup,Delantero,Raúl de,Tomás
+M32-G7-KleinGroup,Delantero,Sory,Kaba
+M32-G7-KleinGroup,Medio Campista,Samuel,Lino
+M32-G7-KleinGroup,Medio Campista,Rubén,García
+M32-G7-KleinGroup,Medio Campista,Óscar,Melendo
+M32-G7-KleinGroup,Medio Campista,Manu,Morlanes
+M32-G7-KleinGroup,Defensa,Sergio,Akieme
+M32-G7-KleinGroup,Defensa,Antonio,Raíllo
+M32-G7-KleinGroup,Defensa,Andoni,Gorosabel
+M32-G7-KleinGroup,Defensa,Víctor,Díaz
+M32-G7-KleinGroup,Portero,Jan,Oblak
+M32-G7-KleinGroup,Portero,Juan Carlos,Martín
+M32-G7-KleinGroup,Medio Campista,Joel,Roca
+M32-G7-KleinGroup,Medio Campista,José,Mari
+M32-G7-KleinGroup,Delantero,Giuliano,Simeone
+albertohg,Delantero,Ferran,Torres
+albertohg,Delantero,Anastasios,Douvikas
+albertohg,Medio Campista,Mikel,Vesga
+albertohg,Medio Campista,Iván,Martín
+albertohg,Medio Campista,,Koke
+albertohg,Medio Campista,Beñat,Turrientes
+albertohg,Defensa,Yan,Couto
+albertohg,Defensa,Nahuel,Molina
+albertohg,Defensa,Kiko,Femenía
+albertohg,Defensa,César,Tárrega
+albertohg,Portero,David,Soria
+albertohg,Portero,Agustín,Marchesín
+albertohg,Medio Campista,Alberto,Perea
+albertohg,Medio Campista,Juan,Cruz
+albertohg,Delantero,Sergi,Guardiola
+M32-G2-xGarcii,Delantero,Largie,Ramazani
+M32-G2-xGarcii,Delantero,Maxi,Gómez
+M32-G2-xGarcii,Medio Campista,Jon,Guridi
+M32-G2-xGarcii,Medio Campista,Óscar,Trejo
+M32-G2-xGarcii,Medio Campista,Moi,Gómez
+M32-G2-xGarcii,Medio Campista,Carlos,Dotor
+M32-G2-xGarcii,Defensa,Thierry,Correia
+M32-G2-xGarcii,Defensa,Óscar De,Marcos
+M32-G2-xGarcii,Defensa,Carlos,Neva
+M32-G2-xGarcii,Defensa,Andrei,Rațiu
+M32-G2-xGarcii,Portero,Ørjan,Nyland
+M32-G2-xGarcii,Portero,Diego,Mariño
+M32-G2-xGarcii,Medio Campista,Martín,Tejón
+M32-G2-xGarcii,Medio Campista,Thomas,Lemar
+M32-G2-xGarcii,Delantero,Jastin,García
+M31-G5-REALE,Delantero,Memphis,Depay
+M31-G5-REALE,Delantero,Ben Brereton,Díaz
+M31-G5-REALE,Medio Campista,Mikel,Merino
+M31-G5-REALE,Medio Campista,Álex,Berenguer
+M31-G5-REALE,Medio Campista,Sergio,Ruiz
+M31-G5-REALE,Medio Campista,Njegoš,Petrović
+M31-G5-REALE,Defensa,Pablo,Maffeo
+M31-G5-REALE,Defensa,Mihailo,Ristić
+M31-G5-REALE,Defensa,Aïssa,Mandi
+M31-G5-REALE,Defensa,Eric,Curbelo
+M31-G5-REALE,Portero,Unai,Simón
+M31-G5-REALE,Portero,Jaume,Doménech
+M31-G5-REALE,Medio Campista,José Ángel,Pozo
+M31-G5-REALE,Medio Campista,Toni,Villa
+M31-G5-REALE,Delantero,,Bebé
+M31-G6-AcMilanesa,Delantero,Mikel,Oyarzabal
+M31-G6-AcMilanesa,Delantero,Álvaro,Morata
+M31-G6-AcMilanesa,Delantero,Vinícius,Júnior
+M31-G6-AcMilanesa,Medio Campista,Dani,García
+M31-G6-AcMilanesa,Medio Campista,Lucas,Torró
+M31-G6-AcMilanesa,Medio Campista,Djibril,Sow
+M31-G6-AcMilanesa,Medio Campista,Arsen,Zakharyan
+M31-G6-AcMilanesa,Defensa,Aridane,Hernández
+M31-G6-AcMilanesa,Defensa,Óscar,Mingueza
+M31-G6-AcMilanesa,Defensa,Gastón,Álvarez
+M31-G6-AcMilanesa,Portero,Giorgi,Mamardashvili
+M31-G6-AcMilanesa,Defensa,Gabriel,Paulista
+M31-G6-AcMilanesa,Defensa,Mario,Hermoso
+M31-G6-AcMilanesa,Medio Campista,Guido,Rodríguez
+M31-G6-AcMilanesa,Medio Campista,Viktor,Tsygankov
+M32-G5-BabooManager,Delantero,Hugo,Duro
+M32-G5-BabooManager,Delantero,Iñaki,Williams
+M32-G5-BabooManager,Delantero,Myrto,Uzuni
+M32-G5-BabooManager,Medio Campista,Antonio,Blanco
+M32-G5-BabooManager,Medio Campista,Fran,Pérez
+M32-G5-BabooManager,Medio Campista,Javier,Guerra
+M32-G5-BabooManager,Medio Campista,Gonzalo,Melero
+M32-G5-BabooManager,Defensa,Alex,Suárez
+M32-G5-BabooManager,Defensa,Jorge,Cuenca
+M32-G5-BabooManager,Defensa,Javi,Hernández
+M32-G5-BabooManager,Portero,Alex,Remiro
+M32-G5-BabooManager,Defensa,José Ángel,Carmona
+M32-G5-BabooManager,Medio Campista,Luis,Milla
+M32-G5-BabooManager,Delantero,Diego,López
+M32-G2-dreamx1,Delantero,Lucas,Boyé
+M32-G2-dreamx1,Delantero,Asier,Villalibre
+M32-G2-dreamx1,Medio Campista,Enzo,Loiodice
+M32-G2-dreamx1,Medio Campista,Iker,Muñoz
+M32-G2-dreamx1,Medio Campista,Oihan,Sancet
+M32-G2-dreamx1,Medio Campista,Santi,Comesaña
+M32-G2-dreamx1,Defensa,Florian,Lejeune
+M32-G2-dreamx1,Defensa,Sergi,Cardona
+M32-G2-dreamx1,Defensa,Çağlar,Söyüncü
+M32-G2-dreamx1,Defensa,Martín,Pascual
+M32-G2-dreamx1,Portero,André,Ferreira
+M32-G2-dreamx1,Portero,Daniel,Fuzato
+M32-G2-dreamx1,Medio Campista,Hugo,Sotelo
+M32-G2-dreamx1,Medio Campista,Manu,Bueno
+M32-G2-dreamx1,Delantero,Enes,Ünal
+M32-G8 - Los Capys,Delantero,Yéremi,Pino
+M32-G8 - Los Capys,Delantero,José Luis,Morales
+M32-G8 - Los Capys,Medio Campista,Óscar,Valentín
+M32-G8 - Los Capys,Medio Campista,Gonzalo,Villar
+M32-G8 - Los Capys,Medio Campista,Unai,López
+M32-G8 - Los Capys,Medio Campista,Amath,Ndiaye
+M32-G8 - Los Capys,Defensa,Juan,Foyth
+M32-G8 - Los Capys,Defensa,Cristhian,Mosquera
+M32-G8 - Los Capys,Defensa,Rafa,Marín
+M32-G8 - Los Capys,Defensa,Momo,Mbaye
+M32-G8 - Los Capys,Portero,Vicente,Guaita
+M32-G8 - Los Capys,Portero,Jesús,Owono
+M32-G8 - Los Capys,Medio Campista,Fede San,Emeterio
+M32-G8 - Los Capys,Medio Campista,Urko,González
+M32-G8 - Los Capys,Delantero,Marciano,Sanca
+M31-G3-CactusPanda,Delantero,João,Félix
+M31-G3-CactusPanda,Delantero,Lamine,Yamal
+M31-G3-CactusPanda,Delantero,Abdón,Prats
+M31-G3-CactusPanda,Medio Campista,Antonio,Sánchez
+M31-G3-CactusPanda,Medio Campista,Nemanja,Maksimović
+M31-G3-CactusPanda,Medio Campista,William,Carvalho
+M31-G3-CactusPanda,Defensa,Ronald,Araújo
+M31-G3-CactusPanda,Defensa,Marcos,Acuña
+M31-G3-CactusPanda,Defensa,Antonio,Rüdiger
+M31-G3-CactusPanda,Defensa,Álex,Sola
+M31-G3-CactusPanda,Portero,Claudio,Bravo
+M31-G3-CactusPanda,Defensa,Miguel,Gutiérrez
+M31-G3-CactusPanda,Medio Campista,Brahim,Díaz
+Admin,Delantero,Ayoze,Pérez
+Admin,Delantero,Vedat,Muriqi
+Admin,Delantero,Ante,Budimir
+Admin,Medio Campista,Saúl,Ñíguez
+Admin,Medio Campista,Marc,Roca
+Admin,Medio Campista,Luca de la,Torre
+Admin,Defensa,Martin,Valjent
+Admin,Defensa,Ferland,Mendy
+Admin,Defensa,Eric,García
+Admin,Defensa,Rubén,Peña
+Admin,Portero,Filip,Jörgensen
+Admin,Defensa,Alberto,Moreno
+Admin,Defensa,Íñigo,Martínez
+Admin,Defensa,Manu,Sánchez
+Admin,Defensa,Sokratis,Papastathopoulos
+Admin,Medio Campista,Arda,Güler
+Admin,Medio Campista,Brian,Ocampo
+Admin,Medio Campista,Nabil,Fekir
+Admin,Medio Campista,,Pepelu
+Admin,Medio Campista,Rubén,Alcaraz
+Admin,Delantero,Robert,Lewandowski
+M32-G4-FantasIA,Delantero,Marc,Cardona
+M32-G4-FantasIA,Delantero,Umar,Sadiq
+M32-G4-FantasIA,Medio Campista,Ander,Guevara
+M32-G4-FantasIA,Medio Campista,Adri,Embarba
+M32-G4-FantasIA,Medio Campista,Aitor,Ruibal
+M32-G4-FantasIA,Medio Campista,Pablo,Ibáñez
+M32-G4-FantasIA,Defensa,Dakonam,Djené
+M32-G4-FantasIA,Defensa,Stefan,Mitrović
+M32-G4-FantasIA,Defensa,Javier,López
+M32-G4-FantasIA,Defensa,Joseba,Zaldua
+M32-G4-FantasIA,Portero,Aitor,Fernández
+M32-G4-FantasIA,Portero,Fernando,Martínez
+M32-G4-FantasIA,Medio Campista,Arnau,Puigmal
+M32-G4-FantasIA,Medio Campista,Beñat,Prados
+M32-G4-FantasIA,Delantero,Marko,Milovanovic
+M32-G1-Cyber-Football,Delantero,Darwin,Machís
+M32-G1-Cyber-Football,Delantero,Mohamed-Ali,Cho
+M32-G1-Cyber-Football,Medio Campista,Kirian,Rodríguez
+M32-G1-Cyber-Football,Medio Campista,Fermín,López
+M32-G1-Cyber-Football,Medio Campista,Dion,Lopy
+M32-G1-Cyber-Football,Medio Campista,Álex,Fernández
+M32-G1-Cyber-Football,Defensa,Raúl,Albiol
+M32-G1-Cyber-Football,Defensa,Ignasi,Miquel
+M32-G1-Cyber-Football,Defensa,Nacho,Vidal
+M32-G1-Cyber-Football,Defensa,Wilson,Manafá
+M32-G1-Cyber-Football,Portero,Stole,Dimitrievski
+M32-G1-Cyber-Football,Portero,Ivo,Grbić
+M32-G1-Cyber-Football,Medio Campista,Gonzalo,Escalante
+M32-G1-Cyber-Football,Medio Campista,Lázaro,Vinicius
+M32-G1-Cyber-Football,Delantero,Jaime,Mata
+M32-G9-PREDITECH INSIGHTS,Delantero,Gerard,Moreno
+M32-G9-PREDITECH INSIGHTS,Delantero,Ezequiel,Ávila
+M32-G9-PREDITECH INSIGHTS,Delantero,Lucas,Ocampos
+M32-G9-PREDITECH INSIGHTS,Medio Campista,Luka,Modrić
+M32-G9-PREDITECH INSIGHTS,Medio Campista,Kike,Barja
+M32-G9-PREDITECH INSIGHTS,Medio Campista,Samuel,Costa
+M32-G9-PREDITECH INSIGHTS,Defensa,Stefan,Savić
+M32-G9-PREDITECH INSIGHTS,Defensa,Jon,Pacheco
+M32-G9-PREDITECH INSIGHTS,Defensa,Alejandro,Balde
+M32-G9-PREDITECH INSIGHTS,Portero,Álvaro,Valles
+M32-G9-PREDITECH INSIGHTS,Defensa,Ferland,Mendy
+jluzon,Delantero,Willian,José
+jluzon,Delantero,Samu,Omorodion
+jluzon,Delantero,Antoine,Griezmann
+jluzon,Medio Campista,Valery,Fernández
+jluzon,Medio Campista,Dani,Rodríguez
+jluzon,Medio Campista,Kike,Pérez
+jluzon,Medio Campista,Rodrigo,Riquelme
+jluzon,Defensa,Raúl,Torrente
+jluzon,Defensa,Jorge,Meré
+jluzon,Defensa,Yeray,Álvarez
+jluzon,Portero,Iván,Villar
+jluzon,Portero,David,Gil
+jluzon,Defensa,César,Azpilicueta
+jluzon,Defensa,Reinildo,Mandava
+jluzon,Medio Campista,Iñigo Ruiz De,Galarreta
+jluzon,Medio Campista,Martín,Merquelanz
+jluzon,Delantero,Malcom Adu,Ares
+Team Name,Position,Name,Surname
+M31-G5-REALE,Delantero,Memphis,Depay
+M31-G5-REALE,Delantero,Ben Brereton,D�az
+M31-G5-REALE,Medio Campista,Mikel,Merino
+M31-G5-REALE,Medio Campista,�lex,Berenguer
+M31-G5-REALE,Medio Campista,Sergio,Ruiz

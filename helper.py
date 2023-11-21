@@ -38,6 +38,9 @@ sofascore_data = "data/sofascore/data"
 players_s_data = "players-data-sofascore.csv"
 
 
+def automated_commit():
+    
+
 def delete_profile():
     temp_f = Path("..", "..", "AppData", "Local", "Temp")
     for i in os.listdir(temp_f):
@@ -119,14 +122,14 @@ def login_fantasy_mundo_deportivo():
     email_fantasy = c["email"]
     password_fantasy = c["password"]
 
-    # chrome_options = webdriver.ChromeOptions()
-    # chrome_options.add_argument("--headless")
-    # driver = webdriver.Chrome(options = chrome_options)
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--headless")
+    driver = webdriver.Chrome(options = chrome_options)
 
-    firefox_options = webdriver.FirefoxOptions()
+    # firefox_options = webdriver.FirefoxOptions()
     # firefox_options.add_argument("--headless")
     # firefox_service = webdriver.FirefoxService(executable_path = "/usr/local/bin/geckodriver")
-    driver = webdriver.Firefox(options = firefox_options)  # , service = firefox_service)
+    # driver = webdriver.Firefox(options = firefox_options)  # , service = firefox_service)
 
     mundo_deportivo_liga_fantasy = "https://mister.mundodeportivo.com/new-onboarding/auth/email"
     driver.get(mundo_deportivo_liga_fantasy)

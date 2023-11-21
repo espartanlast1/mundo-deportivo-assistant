@@ -2,6 +2,7 @@ import csv
 import json
 import os
 import pandas
+import re
 import shutil
 
 from datetime import datetime, timedelta
@@ -65,14 +66,23 @@ def write_to_csv(file_path, header, data, typ):
     os.makedirs(os.path.dirname(file_path), exist_ok = True)
 
     # Create a CSV with all the previous information mentioned.
-    with open(file_path, typ, encoding = "utf-8", newline = "") as archivo_csv:
-        writer = csv.writer(archivo_csv)
+    with open(file_path, typ, encoding = "utf-8", newline = "") as csv_file:
+        writer = csv.writer(csv_file)
         # Write the header
         if header:
             writer.writerow(header)
         # Append the data
         if data:
             writer.writerows(data)
+
+
+def read_csv(filname):
+    with open(filname, "r", encoding = "utf-8", newline = "") as csv_file:
+        csv_reader = csv.reader(csv_file)
+        data = []
+        for row in csv_reader:
+            data.append(row)
+    return data
 
 
 def read_player_url():
@@ -109,14 +119,14 @@ def login_fantasy_mundo_deportivo():
     email_fantasy = c["email"]
     password_fantasy = c["password"]
 
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(options = chrome_options)
+    # chrome_options = webdriver.ChromeOptions()
+    # chrome_options.add_argument("--headless")
+    # driver = webdriver.Chrome(options = chrome_options)
 
-    # firefox_options = webdriver.FirefoxOptions()
+    firefox_options = webdriver.FirefoxOptions()
     # firefox_options.add_argument("--headless")
     # firefox_service = webdriver.FirefoxService(executable_path = "/usr/local/bin/geckodriver")
-    # driver = webdriver.Firefox(options = firefox_options)  # , service = firefox_service)
+    driver = webdriver.Firefox(options = firefox_options)  # , service = firefox_service)
 
     mundo_deportivo_liga_fantasy = "https://mister.mundodeportivo.com/new-onboarding/auth/email"
     driver.get(mundo_deportivo_liga_fantasy)

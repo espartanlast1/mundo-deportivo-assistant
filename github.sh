@@ -12,7 +12,7 @@ git add .
 # Commit the changes with a GPG signature and the provided commit message
 git commit -S -m "$@"
 
-# Pull the latest changes from the remote "main" branch
+# Pull the latest changes from the remote "new_data_fantasy" branch
 git pull new_data_fantasy
 
 # Add all changes (including untracked files) to the staging area
@@ -21,5 +21,5 @@ git add .
 # Commit the changes with a GPG signature and the provided commit message
 git commit -S -m "$@"
 
-# Push the committed changes to the "main" branch
+# Push the committed changes to the "new_data_fantasy" branch
 git push --set-upstream origin new_data_fantasy

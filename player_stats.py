@@ -363,34 +363,39 @@ def scrape_players_stats_fantasy():
     url_csv_file = helper.read_player_url()
     if helper.os.path.exists(helper.timeout_file):
         helper.os.remove(helper.timeout_file)
-    segments = [url_csv_file[i:(i + (math.ceil(len(url_csv_file) / 3)))] for i in range
-                (0, len(url_csv_file), (math.ceil(len(url_csv_file) / 3)))]
+    segments = [url_csv_file[i:(i + (math.ceil(len(url_csv_file) / 4)))] for i in range
+                (0, len(url_csv_file), (math.ceil(len(url_csv_file) / 4)))]
 
     url_part1 = segments[0]
     url_part2 = segments[1]
     url_part3 = segments[2]
+    url_part4 = segments[3]
 
     all_meta, all_value, all_week, header = [], [], [], []
     all_meta1, all_value1, all_week1, header1 = [], [], [], []
     all_meta2, all_value2, all_week2, header2 = [], [], [], []
     all_meta3, all_value3, all_week3, header3 = [], [], [], []
+    all_meta4, all_value4, all_week4, header4 = [], [], [], []
 
     thread1 = threading.Thread(target = process_urls, args = (all_meta1, all_value1, all_week1, header1, url_part1))
     thread2 = threading.Thread(target = process_urls, args = (all_meta2, all_value2, all_week2, header2, url_part2))
     thread3 = threading.Thread(target = process_urls, args = (all_meta3, all_value3, all_week3, header3, url_part3))
+    thread4 = threading.Thread(target = process_urls, args = (all_meta4, all_value4, all_week4, header4, url_part4))
 
     thread1.start()
     thread2.start()
     thread3.start()
+    thread4.start()
 
     thread1.join()
     thread2.join()
     thread3.join()
+    thread4.join()
 
     # Displaying the contents of the CSV file
-    all_meta_lists = [all_meta1, all_meta2, all_meta3]
-    all_value_lists = [all_value1, all_value2, all_value3]
-    all_week_lists = [all_week1, all_week2, all_week3]
+    all_meta_lists = [all_meta1, all_meta2, all_meta3, all_meta4]
+    all_value_lists = [all_value1, all_value2, all_value3, all_value4]
+    all_week_lists = [all_week1, all_week2, all_week3, all_week4]
 
     for meta_list, value_list, week_list in zip(all_meta_lists, all_value_lists, all_week_lists):
         all_meta.extend(meta_list)
@@ -415,5 +420,5 @@ if __name__ == "__main__":
     scrape_players_stats_fantasy()
     for file in helper.all_folders:
         helper.scrape_backup(file, helper.backup_folder)
-    helper.delete_profile()
+    helper.automated_commit()
     print(str(helper.datetime.now() - it))

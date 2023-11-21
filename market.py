@@ -28,5 +28,6 @@ if __name__ == "__main__":
     scrape_market_section_fantasy()
     for i in helper.all_folders:
         helper.scrape_backup(i, helper.backup_folder)
-    helper.delete_profile()
+    # helper.delete_profile()
+    helper.automated_commit()
     print(str(helper.datetime.now() - it))

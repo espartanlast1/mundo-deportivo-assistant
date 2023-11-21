@@ -175,5 +175,5 @@ if __name__ == "__main__":
     scrape_all_players_fantasy()
     scrape_personal_team_fantasy()
     scrape_teams_information()
-    helper.delete_profile()
+    helper.automated_commit()
     print(str(helper.datetime.now() - it))

@@ -1,7 +1,23 @@
 import helper
-import time
 
 from bs4 import BeautifulSoup
+
+
+# So it didn't show any warning of variable may be undefined.
+logger = "Defined"
+
+# For debugging, this sets up a formatting for a logfile, and where it is.
+try:
+    if not helper.os.path.exists("fantasy_teams.log"):
+        helper.logging.basicConfig(filename = "fantasy_teams.log", level = helper.logging.ERROR,
+                                   format = "%(asctime)s %(levelname)s %(name)s %(message)s")
+        logger = helper.logging.getLogger(__name__)
+    else:
+        helper.logging.basicConfig(filename = "fantasy_teams.log", level = helper.logging.ERROR,
+                                   format = "%(asctime)s %(levelname)s %(name)s %(message)s")
+        logger = helper.logging.getLogger(__name__)
+except Exception as error:
+    logger.exception(error)
 
 
 def scrape_all_players_fantasy():
@@ -26,12 +42,13 @@ def scrape_all_players_fantasy():
             # Click the button
             more_players_button.click()
             # Give some time for content to load (you can adjust this sleep duration as needed)
-            time.sleep(2.5)
+            helper.sleep(2.5)
             # Increment the attempt counter
             attempt += 1
-        except (helper.NoSuchElementException, helper.ElementClickInterceptedException, helper.TimeoutException):
+        except (helper.NoSuchElementException, helper.ElementClickInterceptedException, helper.TimeoutException) as err:
             # The button is not found, set the flag to False
             button_exists = False
+            logger.exception(err)
 
     # After the loop, perform another action if the button no longer exists
     if not button_exists:
@@ -105,14 +122,16 @@ def scrape_teams_information():
             lineup_players = driver.find_element(helper.By.CLASS_NAME, "lineup-starting")
             # Find all the player links the ones that are playing
             player_links = lineup_players.find_elements(helper.By.TAG_NAME, "a")
-        except helper.NoSuchElementException:
+        except helper.NoSuchElementException as err:
             player_links = []
+            logger.exception(err)
         try:
             lineup_subs = driver.find_element(helper.By.CLASS_NAME, "lineup-subs")
             # Find all the player links the ones that are subs
             playersubs_links = lineup_subs.find_elements(helper.By.TAG_NAME, "a")
-        except helper.NoSuchElementException:
+        except helper.NoSuchElementException as err:
             playersubs_links = []
+            logger.exception(err)
         # put them all together and only get the links from the Hrefs
         player_links = player_links + playersubs_links
         player_hrefs = [player_link.get_attribute("href") for player_link in player_links]
@@ -171,9 +190,9 @@ def scrape_teams_information():
 
 
 if __name__ == "__main__":
-    it = helper.datetime.now()
+    # it = helper.datetime.now()
     scrape_all_players_fantasy()
     scrape_personal_team_fantasy()
     scrape_teams_information()
     helper.automated_commit()
-    print(str(helper.datetime.now() - it))
+    # print(str(helper.datetime.now() - it))

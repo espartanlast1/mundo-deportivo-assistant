@@ -5,6 +5,23 @@ import glob
 from datetime import datetime
 
 
+# So it didn't show any warning of variable may be undefined.
+logger = "Defined"
+
+# For debugging, this sets up a formatting for a logfile, and where it is.
+try:
+    if not helper.os.path.exists("api_scrape.log"):
+        helper.logging.basicConfig(filename = "api_scrape.log", level = helper.logging.ERROR,
+                                   format = "%(asctime)s %(levelname)s %(name)s %(message)s")
+        logger = helper.logging.getLogger(__name__)
+    else:
+        helper.logging.basicConfig(filename = "api_scrape.log", level = helper.logging.ERROR,
+                                   format = "%(asctime)s %(levelname)s %(name)s %(message)s")
+        logger = helper.logging.getLogger(__name__)
+except Exception as error:
+    logger.exception(error)
+
+
 def call_sofascore_instructions(y):
     data = fetch_data(y)
     save_to_csv(data, y, filename = helper.sofascore_data + str(y) + ".csv")
@@ -180,12 +197,10 @@ if __name__ == "__main__":
 
     api_football = config["api-football"]
 
-    it = datetime.now()
+    # it = datetime.now()
     scrape_la_liga_standings(api_football)
     helper.scrape_backup(helper.football_folder, helper.backup_folder)
-    print(str(datetime.now() - it))
 
-    it = datetime.now()
     yearlist = [15, 16, 17, 18, 19, 20, 21, 22]
     for i in yearlist:
         if not helper.os.path.exists(helper.os.path.join(helper.sofascore_data + str(i) + ".csv")) and \
@@ -193,4 +208,4 @@ if __name__ == "__main__":
             call_sofascore_instructions(i)
     call_sofascore_instructions(23)
     consolidate_all_csv()
-    print(str(datetime.now() - it))
+    # print(str(datetime.now() - it))

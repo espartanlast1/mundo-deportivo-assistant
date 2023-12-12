@@ -1,25 +1,31 @@
+# !/usr/bin/env python3
+
+# -*- coding: utf-8 -*-
+# api_scrape.py
+
+#
+
 import helper
 import http.client
 import glob
-
-from datetime import datetime
 
 
 # So it didn't show any warning of variable may be undefined.
 logger = "Defined"
 
 # For debugging, this sets up a formatting for a logfile, and where it is.
-try:
-    if not helper.os.path.exists("api_scrape.log"):
-        helper.logging.basicConfig(filename = "api_scrape.log", level = helper.logging.ERROR,
-                                   format = "%(asctime)s %(levelname)s %(name)s %(message)s")
-        logger = helper.logging.getLogger(__name__)
-    else:
-        helper.logging.basicConfig(filename = "api_scrape.log", level = helper.logging.ERROR,
-                                   format = "%(asctime)s %(levelname)s %(name)s %(message)s")
-        logger = helper.logging.getLogger(__name__)
-except Exception as error:
-    logger.exception(error)
+if helper.lorca != "Windows":
+    try:
+        if not helper.os.path.exists(helper.r_folder + "api_scrape.log"):
+            helper.logging.basicConfig(filename = helper.r_folder + "api_scrape.log", level = helper.logging.ERROR,
+                                       format = "%(asctime)s %(levelname)s %(name)s %(message)s")
+            logger = helper.logging.getLogger(__name__)
+        else:
+            helper.logging.basicConfig(filename = helper.r_folder + "api_scrape.log", level = helper.logging.ERROR,
+                                       format = "%(asctime)s %(levelname)s %(name)s %(message)s")
+            logger = helper.logging.getLogger(__name__)
+    except Exception as error:
+        logger.exception(error)
 
 
 def call_sofascore_instructions(y):
@@ -68,7 +74,7 @@ def scrape_la_liga_standings(api_key):
                   standing["home"]["draw"], standing["home"]["lose"], standing["home"]["goals"]["for"],
                   standing["home"]["goals"]["against"], standing["away"]["win"], standing["away"]["draw"],
                   standing["away"]["lose"], standing["away"]["goals"]["for"], standing["away"]["goals"]["against"],
-                  datetime.now()]
+                  helper.datetime.now()]
 
         # Append values to the team_data_list
         team_data_list.append(values)
@@ -199,13 +205,17 @@ if __name__ == "__main__":
 
     # it = datetime.now()
     scrape_la_liga_standings(api_football)
-    helper.scrape_backup(helper.football_folder, helper.backup_folder)
 
     yearlist = [15, 16, 17, 18, 19, 20, 21, 22]
     for i in yearlist:
-        if not helper.os.path.exists(helper.os.path.join(helper.sofascore_data + str(i) + ".csv")) and \
-                helper.os.path.getsize(helper.os.path.join(helper.sofascore_data + str(i) + ".csv")) > 115000:
+        if not helper.os.path.exists(
+                helper.os.path.join(helper.sofascore_data + str(i) + ".csv")) and \
+                helper.os.path.getsize(helper.os.path.join(helper.sofascore_data + str(i) + ".csv")) > 110000:
             call_sofascore_instructions(i)
     call_sofascore_instructions(23)
     consolidate_all_csv()
-    # print(str(datetime.now() - it))
+    helper.delete_profile()
+    for folder in helper.all_folders:
+        helper.scrape_backup(folder, helper.backup_folder)
+    helper.automated_commit("API.")
+    # print(str(helper.datetime.now() - it))

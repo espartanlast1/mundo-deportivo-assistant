@@ -1,23 +1,30 @@
+# !/usr/bin/env python3
+
+# -*- coding: utf-8 -*-
+# fantasy_teams.py
+
+#
+
 import helper
 
 from bs4 import BeautifulSoup
-
 
 # So it didn't show any warning of variable may be undefined.
 logger = "Defined"
 
 # For debugging, this sets up a formatting for a logfile, and where it is.
-try:
-    if not helper.os.path.exists("fantasy_teams.log"):
-        helper.logging.basicConfig(filename = "fantasy_teams.log", level = helper.logging.ERROR,
-                                   format = "%(asctime)s %(levelname)s %(name)s %(message)s")
-        logger = helper.logging.getLogger(__name__)
-    else:
-        helper.logging.basicConfig(filename = "fantasy_teams.log", level = helper.logging.ERROR,
-                                   format = "%(asctime)s %(levelname)s %(name)s %(message)s")
-        logger = helper.logging.getLogger(__name__)
-except Exception as error:
-    logger.exception(error)
+if helper.lorca != "Windows":
+    try:
+        if not helper.os.path.exists(helper.r_folder + "fantasy_teams.log"):
+            helper.logging.basicConfig(filename = helper.r_folder + "fantasy_teams.log", level = helper.logging.ERROR,
+                                       format = "%(asctime)s %(levelname)s %(name)s %(message)s")
+            logger = helper.logging.getLogger(__name__)
+        else:
+            helper.logging.basicConfig(filename = helper.r_folder + "fantasy_teams.log", level = helper.logging.ERROR,
+                                       format = "%(asctime)s %(levelname)s %(name)s %(message)s")
+            logger = helper.logging.getLogger(__name__)
+    except Exception as error:
+        logger.exception(error)
 
 
 def scrape_all_players_fantasy():
@@ -45,10 +52,10 @@ def scrape_all_players_fantasy():
             helper.sleep(2.5)
             # Increment the attempt counter
             attempt += 1
-        except (helper.NoSuchElementException, helper.ElementClickInterceptedException, helper.TimeoutException) as err:
+        except (AttributeError, helper.NoSuchElementException, helper.ElementClickInterceptedException,
+                helper.TimeoutException):
             # The button is not found, set the flag to False
             button_exists = False
-            logger.exception(err)
 
     # After the loop, perform another action if the button no longer exists
     if not button_exists:
@@ -71,14 +78,85 @@ def scrape_personal_team_fantasy():
 
     # Select each player.
     team_players_info = team_players_table.find_elements(helper.By.CLASS_NAME, "info")
+    whole_team_id = helper.extract_player_id(team_players_table)
 
     #
-    players = helper.scrape_player_info(team_players_info)
+    players = helper.scrape_player_info(team_players_info, whole_team_id)
 
     # ------- Start process to save all the information in a CSV. --------
-    team_players_header = ["Name", "Market value", "Average value", "Ante penultimate match score",
+    team_players_header = ["ID", "Name", "Market value", "Average value", "Ante penultimate match score",
                            "Penultimate match score", "Last match score"]
     helper.write_to_csv(helper.personal_team_file, team_players_header, players, "w")
+    driver.quit()
+
+
+def process_urls(t_p_d, t_d_d, t_d_h, u_e, p_m, l_m):
+    driver = helper.login_fantasy_mundo_deportivo()
+    driver.get(u_e)
+    h1_element = driver.find_element(by = helper.By.TAG_NAME, value = "h1")
+    t_n = h1_element.text
+    # Navigate to the userTeam's individual page
+    try:
+        # Find the parent element that contains all the starting player links
+        lineup_players = driver.find_element(helper.By.CLASS_NAME, "lineup-starting")
+        # Find all the player links the ones that are playing
+        player_links = lineup_players.find_elements(helper.By.TAG_NAME, "a")
+    except helper.NoSuchElementException:
+        player_links = []
+    try:
+        lineup_subs = driver.find_element(helper.By.CLASS_NAME, "lineup-subs")
+        # Find all the player links the ones that are subs
+        playersubs_links = lineup_subs.find_elements(helper.By.TAG_NAME, "a")
+    except helper.NoSuchElementException:
+        playersubs_links = []
+    # put them all together and only get the links from the Hrefs
+    player_links = player_links + playersubs_links
+    player_hrefs = [player_link.get_attribute("href") for player_link in player_links]
+
+    # In this for once with all players links we get the name, surname and position
+    for player in player_hrefs:
+        driver.get(player)
+        soup = BeautifulSoup(driver.page_source, "html.parser")
+
+        # Extract class = pos-" text
+        position_class = soup.select_one(".team-position i")["class"][0]
+
+        # Find the "left" div
+        left_div = soup.find("div", class_ = "left")
+
+        # Extract the name from within the "left" div
+        name = left_div.find("div", class_ = "name").text
+        surname = left_div.find("div", class_ = "surname").text
+
+        # Map the position class to the corresponding position
+        position = p_m.get(position_class, "Unknown")
+        t_p_d.append([t_n, position, name, surname])
+    driver.get(u_e)
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+
+    # Select the parent div element with the class "wrapper" to narrow down the search
+    parent_div = soup.find(name = "div", class_ = "wrapper items thin-scrollbar")
+
+    # Find all div elements with class "item" within the parent div
+    items = parent_div.find_all(name = "div", class_ = "item")
+
+    # Initialize a dictionary to store label-value pairs
+    label_value_dict = {}
+
+    # Extract data from each item and set each label with each corresponding value
+    for item in items:
+        label = item.find("div", class_ = "label").text
+        translated_label = l_m.get(label, t_d_h)
+        value = item.find("div", class_ = "value").text
+        label_value_dict[translated_label] = value
+
+    points = label_value_dict.get("Points")
+    average = (label_value_dict.get("Average")).replace(",", ".")
+    team_value = (label_value_dict.get("Value")).replace(",", ".")
+    players_count = label_value_dict.get("Players")
+
+    # Write the data to the CSV file
+    t_d_d.append([t_n, points, average, team_value, players_count])
     driver.quit()
 
 
@@ -108,83 +186,27 @@ def scrape_teams_information():
     team_data_header = ["Team Name", "Points", "Average", "Value", "Players"]
     label_mapping = dict(zip(original_labels, team_data_header))
 
-    teams_players_data = []
-    team_data_data = []
+    teams_players_data = [[] for _ in range(len(user_hrefs))]
+    team_data_data = [[] for _ in range(len(user_hrefs))]
 
     # Goes through all the userTeams and gets each teams players
-    for user_element in user_hrefs:
-        driver.get(user_element)
-        h1_element = driver.find_element(by = helper.By.TAG_NAME, value = "h1")
-        team_name = h1_element.text
-        # Navigate to the userTeam's individual page
-        try:
-            # Find the parent element that contains all the starting player links
-            lineup_players = driver.find_element(helper.By.CLASS_NAME, "lineup-starting")
-            # Find all the player links the ones that are playing
-            player_links = lineup_players.find_elements(helper.By.TAG_NAME, "a")
-        except helper.NoSuchElementException as err:
-            player_links = []
-            logger.exception(err)
-        try:
-            lineup_subs = driver.find_element(helper.By.CLASS_NAME, "lineup-subs")
-            # Find all the player links the ones that are subs
-            playersubs_links = lineup_subs.find_elements(helper.By.TAG_NAME, "a")
-        except helper.NoSuchElementException as err:
-            playersubs_links = []
-            logger.exception(err)
-        # put them all together and only get the links from the Hrefs
-        player_links = player_links + playersubs_links
-        player_hrefs = [player_link.get_attribute("href") for player_link in player_links]
+    threads = []
+    for i in range(len(user_hrefs)):
+        thread = helper.threading.Thread(target = process_urls, args = (teams_players_data[i], team_data_data[i],
+                                                                        team_data_header, user_hrefs[i],
+                                                                        position_mapping, label_mapping))
+        threads.append(thread)
+        helper.sleep(0.1)
+        thread.start()
 
-        # In this for once with all players links we get the name, surname and position
-        for player in player_hrefs:
-            driver.get(player)
-            soup = BeautifulSoup(driver.page_source, "html.parser")
+    for thread in threads:
+        thread.join()
 
-            # Extract class = pos-" text
-            position_class = soup.select_one(".team-position i")["class"][0]
-
-            # Find the "left" div
-            left_div = soup.find("div", class_ = "left")
-
-            # Extract the name from within the "left" div
-            name = left_div.find("div", class_ = "name").text
-            surname = left_div.find("div", class_ = "surname").text
-
-            # Map the position class to the corresponding position
-            position = position_mapping.get(position_class, "Unknown")
-
-            teams_players_data.append([team_name, position, name, surname])
-        driver.get(user_element)
-        soup = BeautifulSoup(driver.page_source, "html.parser")
-
-        # Select the parent div element with the class "wrapper" to narrow down the search
-        parent_div = soup.find(name = "div", class_ = "wrapper items thin-scrollbar")
-
-        # Find all div elements with class "item" within the parent div
-        items = parent_div.find_all(name = "div", class_ = "item")
-
-        # Initialize a dictionary to store label-value pairs
-        label_value_dict = {}
-
-        # Extract data from each item and set each label with each corresponding value
-        for item in items:
-            label = item.find("div", class_ = "label").text
-            translated_label = label_mapping.get(label, team_data_header)
-            value = item.find("div", class_ = "value").text
-            label_value_dict[translated_label] = value
-
-        points = label_value_dict.get("Points")
-        average = (label_value_dict.get("Average")).replace(",", ".")
-        team_value = (label_value_dict.get("Value")).replace(",", ".")
-        players_count = label_value_dict.get("Players")
-
-        # Write the data to the CSV file
-        team_data_data.append([team_name, points, average, team_value, players_count])
-
-    helper.write_to_csv(helper.team_data_file, team_data_header, sorted(team_data_data, key = lambda x: x[0][0]), "w")
-    helper.write_to_csv(helper.teams_players_file, teams_players_header, sorted(teams_players_data,
-                                                                                key = lambda x: x[0][0]), "w")
+    all_t_data_data = [item for sublist in team_data_data for item in sublist]
+    all_t_players_data = [item for sublist in teams_players_data for item in sublist]
+    helper.write_to_csv(helper.team_data_file, team_data_header, sorted(all_t_data_data, key = lambda x: x[0][0]), "w")
+    helper.write_to_csv(helper.teams_players_file, teams_players_header,
+                        sorted(all_t_players_data, key = lambda x: x[0][0]), "w")
     # Close the WebDriver when done
     driver.quit()
 
@@ -194,5 +216,8 @@ if __name__ == "__main__":
     scrape_all_players_fantasy()
     scrape_personal_team_fantasy()
     scrape_teams_information()
-    helper.automated_commit()
+    helper.delete_profile()
+    for folder in helper.all_folders:
+        helper.scrape_backup(folder, helper.backup_folder)
+    helper.automated_commit("League.")
     # print(str(helper.datetime.now() - it))

@@ -5,8 +5,8 @@
 
 #
 
-import src.Functions.imports as ip
+import application.src.Functions.imports as imp
 
-
-menu_eng = ip.main_window.main_menu(450, 750)
+print(imp.root)
+menu_eng = imp.main_window.main_menu(450, 750)
 menu_eng.read()

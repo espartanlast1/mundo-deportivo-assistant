@@ -9,11 +9,19 @@
 """
 """
 
+import PySimpleGUI as pSG
+
+from application.src.Layouts import main_window
+from os import getcwd
+from time import sleep
+
 """Contains all imports necessary."""
 
-import PySimpleGUI as pSG
-import io
 
-from PIL import Image, ImageTk
-from src.Layouts import main_window
-from time import sleep
+root = getcwd() + "/"
+app = root + "application/"
+src = app + "src/"
+scrape = root + "scrape/"
+models = root + "models/"
+img = src + "img/"
+rec = img + "recommendation.png"

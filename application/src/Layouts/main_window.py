@@ -23,3 +23,21 @@ def main_menu(h, w):
                             size = (w, h), text_justification = "center")
 
     return window
+
+def login(h,w):
+    layout = [
+        [imp.pSG.Column([
+                    [imp.pSG.HSeparator()],
+                    [imp.pSG.Image(filename = imp.fantasy_logo, key = "__IMAGE__", size = ((2 * (w // 5)), h//10))],
+                    [imp.pSG.Text("Email:")],
+                    [imp.pSG.InputText()]
+                ],
+                element_justification = "center"
+            )
+        ]
+    ]
+
+    window = imp.pSG.Window("Bienvenido al asistente deportivo de Liga Fantasy del Mundo Deportivo", layout, disable_close = True, element_justification = "center",
+                            size = (w, h), text_justification = "center")
+
+    return window

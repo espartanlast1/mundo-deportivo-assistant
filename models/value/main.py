@@ -22,7 +22,7 @@ def save_prediction(player_id, date, value):
     })
 
     # Define the file name
-    prediction_csv = "fantasy_market_value_prediction_unsorted.csv"
+    prediction_csv = "auxiliary/fantasy_market_value_prediction_unsorted.csv"
 
     # Check if the file exists to decide whether to write header
     file_exists = os.path.exists(prediction_csv)
@@ -42,7 +42,7 @@ def sort_prediction_by_id(prediction_file):
     df_sorted = df_sorted.reset_index(drop=True)
 
     # If you want to save the sorted DataFrame to a new file
-    df_sorted.to_csv('fantasy_market_value_prediction_sorted.csv', index=False)
+    df_sorted.to_csv('predictions/fantasy_market_value_prediction_sorted.csv', index=False)
 
 
 def evaluate_arima_model(data, arima_order):
@@ -78,7 +78,7 @@ def plot_arima_predictions(data, order, player_id, forecast_days):
         plt.xlabel('Date')
         plt.ylabel('Value')
         plt.legend()
-        plt.savefig(f'plots/{player_id}_market_value_prediction_plot.png')
+        plt.savefig(f'predictions/plots/{player_id}_market_value_prediction_plot.png')
         plt.close()
         print(f"Plot saved for {player_id}")
 
@@ -245,4 +245,4 @@ if __name__ == '__main__':
     print(f"P: {most_common_params[0]}, D: {most_common_params[1]}, Q: {most_common_params[2]}")
 
     # Sort predictions CSV by ID.
-    sort_prediction_by_id('fantasy_market_value_prediction.csv')
+    sort_prediction_by_id('auxiliary/fantasy_market_value_prediction_unsorted.csv')

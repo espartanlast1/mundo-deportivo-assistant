@@ -14,10 +14,10 @@ def test_tab():
     height, width = ((helper.pSG.Window.get_screen_size()[1] // 100) * 100),\
                     ((helper.pSG.Window.get_screen_size()[0] // 50) * 50)
     # Definir el contenido de las pestañas
-    if not helper.path.exists(route.current_path + str(height) + str(width) + ".png"):
-        helper.create_image(route.current_alignment, )
-    if not helper.path.exists(route.recommendation_path + str(height) + str(width) + ".png"):
-        helper.create_image(route.future_alignment)
+    # if not helper.path.exists(route.current_path + str(height) + str(width) + ".png"):
+    #     helper.create_image(route.current_alignment, )
+    # if not helper.path.exists(route.recommendation_path + str(height) + str(width) + ".png"):
+    #     helper.create_image(route.future_alignment)
 
     current = route.current_path + str(height) + str(width) + ".png"
     recommendation = route.recommendation_path + str(height) + str(width) + ".png"
